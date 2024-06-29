@@ -1,0 +1,15 @@
+:root {
+    --body-text-font-family: "Roboto", Helvetica;
+    --body-text-font-size: 20px;
+    --body-text-font-style: normal;
+    --body-text-font-weight: 400;
+    --body-text-letter-spacing: 0px;
+    --body-text-line-height: 27.5px;
+    --h1-main-heading-font-family: "Outfit", Helvetica;
+    --h1-main-heading-font-size: 70px;
+    --h1-main-heading-font-style: normal;
+    --h1-main-heading-font-weight: 700;
+    --h1-main-heading-letter-spacing: 0px;
+    --h1-main-heading-line-height: 100%;
+  }
+  
