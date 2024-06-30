@@ -19,6 +19,21 @@ const router = createRouter({
       component: () => import("./views/SignUp.vue"),
     },
     {
+      path: "/studentprofile",
+      name: "studentprofile",
+      component: () => import("./views/ProfilePageStudent.vue"),
+    },
+    {
+      path: "/careerservprofile",
+      name: "careerservprofile",
+      component: () => import("./views/ProfilePageCareerServ.vue"),
+    },
+    {
+      path: "/adminprofile",
+      name: "adminprofile",
+      component: () => import("./views/ProfilePageAdmin.vue"),
+    },
+    {
       path: "/maintain",
       name: "maintain",
       component: () => import("./views/StoryMaintain.vue"),
