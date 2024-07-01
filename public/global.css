@@ -6,8 +6,17 @@
       }
       html,
       body {
-        margin: 0px;
-        height: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: auto;
+        margin-bottom: auto;
+        text-align: center;
+        height: 100vh;
+        width: 100vw;
+      }
+      #app{
+        height: inherit;
+        width: inherit;
       }
       /* a blue color as a generic focus style */
       button:focus-visible {

@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <v-app :style="{ background: '#F4F4F4' }">
+  <v-app :style="{ background: '#000235' }">
     <v-main>
       <router-view />
     </v-main>
