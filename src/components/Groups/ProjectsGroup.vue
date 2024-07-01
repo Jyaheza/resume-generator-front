@@ -6,26 +6,31 @@
           <div class="project-text">Projects</div>
         </div>
         <div class="project-title-input">
-          <div class="rectangle-33" />
-          <div class="rectangle-34" />
+          <div class="rectangle-34">
+            <v-text-field label="Project Title"/>
+          </div>
         </div>
         <div class="start-date-3">
-          <div class="rectangle-35" />
-          <div class="rectangle-36" />
+          <div class="rectangle-36">
+            <v-text-field label="Start date: MM/DD/YYYY"/>
+          </div>
         </div>
         <div class="end-date-3">
-          <div class="rectangle-35" />
-          <div class="rectangle-36" />
+          <div class="rectangle-36">
+            <v-text-field label="End date: MM/DD/YYYY"/>
+          </div>
         </div>
         <div class="summary">
-          <div class="rectangle-37" />
-          <div class="rectangle-38" />
+          <div class="rectangle-38">
+            <v-textarea class="v-text-project-location-height-summary" label="Project description"/>
+          </div>
         </div>
         <div class="project-location">
-          <div class="rectangle-39" />
-          <div class="rectangle-40" />
+          <div class="rectangle-40">
+            <v-text-field label="Project location" />
+          </div>
         </div>
-        <div class="save-to-project">
+        <div @click="" class="save-to-project" style="cursor: pointer;">
           <div class="save-project-list">
             <div class="save-project-text-wrapper">
               <div class="save-project-text">Save To Project List</div>
@@ -157,7 +162,7 @@
     height: 278px;
     left: 665px;
     position: absolute;
-    top: 275px;
+    top: 273px;
     width: 360px;
   }
   
@@ -238,6 +243,11 @@
     top: 18px;
     white-space: nowrap;
     width: 217px;
+  }
+
+  .projects-group .v-text-project-location-height-summary {
+    min-height: 410px !important;
+    top: 100px; 
   }
   </style>
   

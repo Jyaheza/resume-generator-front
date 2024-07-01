@@ -1,9 +1,9 @@
 <template>
     <div class="steps-groups">
-      <div class="fill-resume-info">
+      <div @click="" class="fill-resume-info" style="cursor: pointer;">
         <p class="p">Step 1: Fill Resume Info</p>
       </div>
-      <div class="choose-template">
+      <div @click="" class="choose-template" style="cursor: pointer;">
         <div class="text-wrapper-5">Step 2: Choose Template</div>
       </div>
     </div>

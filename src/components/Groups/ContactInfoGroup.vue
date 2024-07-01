@@ -39,7 +39,7 @@
           </div>
           
         </div>
-        <div class="save-contact">
+        <div @click="" class="save-contact" style="cursor: pointer;">
           <div class="save-contact-info">
             <div class="save-contact-text-wrapper">
               <div class="save-contact-text">Save Contact Info</div>

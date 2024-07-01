@@ -6,30 +6,36 @@
           <div class="text-wrapper-4">Education</div>
         </div>
         <div class="major">
-          <div class="rectangle-23" />
-          <div class="rectangle-24" />
+          <div class="rectangle-24">
+            <v-text-field label="Major" />
+          </div>
         </div>
         <div class="start-date-2">
-          <div class="rectangle-25" />
-          <div class="rectangle-26" />
+          <div class="rectangle-26">
+            <v-text-field label="Start date: MM/DD/YYYY" />
+          </div>
         </div>
         <div class="end-date-2">
-          <div class="rectangle-25" />
-          <div class="rectangle-26" />
+          <div class="rectangle-26">
+            <v-text-field label="End date: MM/DD/YYYY" />
+          </div>
         </div>
         <div class="awards">
-          <div class="rectangle-27" />
-          <div class="rectangle-28" />
+          <div class="rectangle-28">
+            <v-textarea class="v-text-awards-height-summary" label="Awards" />
+          </div>
         </div>
         <div class="coursework">
-          <div class="rectangle-29" />
-          <div class="rectangle-30" />
+          <div class="rectangle-30">
+            <v-textarea class="v-text-coursework-height-summary" label="Coursework" />
+          </div>
         </div>
         <div class="university">
-          <div class="rectangle-31" />
-          <div class="rectangle-32" />
+          <div class="rectangle-32">
+            <v-text-field label="University" />
+          </div>
         </div>
-        <div class="save-education-list-wrapper">
+        <div @click="" class="save-education-list-wrapper" style="cursor: pointer;">
           <div class="overlap-group-wrapper">
             <div class="save-job-text-wrapper">
               <div class="save-job-text">Save To Education List</div>
@@ -268,6 +274,16 @@
     top: 18px;
     white-space: nowrap;
     width: 250px;
+  }
+
+  .education-group .v-text-awards-height-summary{
+    min-height: 420px !important;
+    top: 100px; 
+  }
+
+  .education-group .v-text-coursework-height-summary{
+    min-height: 285px !important;
+    top: 100px; 
   }
   </style>
   

@@ -6,37 +6,44 @@
           <div class="text-wrapper-3">Experience</div>
         </div>
         <div class="job-role">
-          <div class="rectangle-15" />
-          <div class="rectangle-16" />
+          <div class="rectangle-16">
+            <v-text-field label="Job Role" />
+          </div>
         </div>
         <div class="start-date">
-          <div class="rectangle-17" />
-          <div class="rectangle-18" />
+          <div class="rectangle-18">
+            <v-text-field label="Start date: MM/DD/YYYY" />
+          </div>
         </div>
         <div class="city-2">
-          <div class="rectangle-17" />
-          <div class="rectangle-18" />
+          <div class="rectangle-18">
+            <v-text-field label="City" />
+          </div>
         </div>
         <div class="state-2">
-          <div class="rectangle-17" />
-          <div class="rectangle-18" />
+          <div class="rectangle-18">
+            <v-text-field label="State" />
+          </div>
         </div>
         <div class="end-date">
-          <div class="rectangle-17" />
-          <div class="rectangle-18" />
+          <div class="rectangle-18">
+            <v-text-field label="End date: MM/DD/YYYY" />
+          </div>
         </div>
         <div class="job-description">
-          <div class="rectangle-19" />
-          <div class="rectangle-20" />
+          <div class="rectangle-20">
+            <v-textarea class="v-text-jobdescription-height-summary" label="Job Description" />
+          </div>
         </div>
         <div class="company">
-          <div class="rectangle-21" />
-          <div class="rectangle-22" />
+          <div class="rectangle-22">
+            <v-text-field label="Company" />
+          </div>
         </div>
-        <div class="save-to-education">
-          <div class="save-education-list">
-            <div class="save-ed-text-wrapper">
-              <div class="save-ed-text">Save To Job List</div>
+        <div @click="" class="save-to-experience" style="cursor: pointer;">
+          <div class="save-experience-list"> 
+            <div class="save-exp-text-wrapper">
+              <div class="save-exp-text">Save To Job List</div>
             </div>
           </div>
         </div>
@@ -155,7 +162,7 @@
   
   .experience-group .city-2 {
     height: 54px;
-    left: 104px;
+    left: 100px;
     position: absolute;
     top: 271px;
     width: 260px;
@@ -229,7 +236,7 @@
     width: 925px;
   }
   
-  .experience-group .save-to-education {
+  .experience-group .save-to-experience {
     height: 64px;
     left: 100px;
     position: absolute;
@@ -237,12 +244,12 @@
     width: 277px;
   }
   
-  .experience-group .save-education-list {
+  .experience-group .save-experience-list {
     height: 64px;
     width: 279px;
   }
   
-  .experience-group .save-ed-text-wrapper {
+  .experience-group .save-exp-text-wrapper {
     background-image: url(https://c.animaapp.com/qPlFWTJl/img/rectangle-20-4.svg);
     background-size: 100% 100%;
     height: 64px;
@@ -250,7 +257,7 @@
     width: 277px;
   }
   
-  .experience-group .save-ed-text {
+  .experience-group .save-exp-text {
     color: #ffffff;
     font-family: "Outfit", Helvetica;
     font-size: 20px;
@@ -262,6 +269,11 @@
     top: 21px;
     white-space: nowrap;
     width: 200px;
+  }
+
+  .experience-group .v-text-jobdescription-height-summary {
+    min-height: 285px !important;
+    top: 100px; 
   }
   </style>
   

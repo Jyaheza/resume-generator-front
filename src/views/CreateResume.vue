@@ -15,7 +15,7 @@
         <EducationGroup />
         <ProjectsGroup />
         <SkillsGroup />
-        <div class="next">
+        <div @click="" class="next" style="cursor: pointer;">
           <div class="next-text-wrapper">
             <div class="next-text">NEXT STEP</div>
           </div>
@@ -66,7 +66,7 @@
     height: 102px;
     left: 930px;
     position: absolute;
-    top: 3412px;
+    top: 3250px;
     width: 257px;
   }
   

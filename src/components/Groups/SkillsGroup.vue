@@ -6,10 +6,11 @@
           <div class="skills-text">Skills</div>
         </div>
         <div class="skills-input-2">
-          <div class="rectangle-41"></div>
-          <div class="rectangle-42"></div>
+          <div class="rectangle-42">
+            <v-textarea class="v-text-project-location-height-summary" label="Skills" />
+          </div>
         </div>
-        <div class="save-to-skills">
+        <div @click="" class="save-to-skills" style="cursor: pointer;">
           <div class="save-skills-list">
             <div class="save-skills-text-wrapper">
               <div class="save-skills-text">Save To Skills List</div>
@@ -96,7 +97,7 @@
   
   .skills-group .rectangle-42 {
     background-color: #d9d9d9;
-    height: 179px;
+    height: 145px;
     left: 0;
     position: absolute;
     top: 11px;
@@ -137,5 +138,11 @@
     white-space: nowrap;
     width: 188px;
   }
+
+  .skills-group .v-text-skills-height-summary {
+    min-height: 450px !important;
+    top: 100px; 
+  }
+
   </style>
   
