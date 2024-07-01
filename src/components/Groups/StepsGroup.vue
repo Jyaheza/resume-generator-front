@@ -1,9 +1,15 @@
+<script setup>
+import { onMounted } from "vue";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
+</script>
 <template>
     <div class="steps-groups">
       <div @click="" class="fill-resume-info" style="cursor: pointer;">
         <p class="p">Step 1: Fill Resume Info</p>
       </div>
-      <div @click="" class="choose-template" style="cursor: pointer;">
+      <div @click="router.push({ name: 'selecttemplate'})" class="choose-template" style="cursor: pointer;">
         <div class="text-wrapper-5">Step 2: Choose Template</div>
       </div>
     </div>

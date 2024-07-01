@@ -21,7 +21,7 @@ const router = useRouter();
           :loginLogo="loginLogo"
           objectOtherClassName="object-other-instance"
         />
-        <div @click="" class="overlap-group-wrapper" style="cursor:pointer;">
+        <div @click="router.push({ name: 'studentprofile'})" class="overlap-group-wrapper" style="cursor:pointer;">
           <div class="overlap-group">
             <div class="text-wrapper-3">LOGIN</div>
           </div>

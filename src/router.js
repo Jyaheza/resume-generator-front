@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import("./views/CreateResume.vue"),
     },
     {
+      path: "/selecttemplate",
+      name: "selecttemplate",
+      component: () => import("./views/SelectTemplate.vue"),
+    },
+    {
       path: "/studentprofile",
       name: "studentprofile",
       component: () => import("./views/ProfilePageStudent.vue"),

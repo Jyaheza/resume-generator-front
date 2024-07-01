@@ -6,7 +6,7 @@ const router = useRouter();
 
 async function createNewResume()
 {
-    alert('No function yet');
+  router.push({ name: "createresume"});
 }
 
 async function matchResumeJob()
@@ -52,7 +52,7 @@ async function resumePlaceholder()
               </div>
             </div>
           </div>
-          <div @click="createNewResume()" class="createnew-container" style="cursor: pointer;">
+          <div @click="router.push({ name: 'createresume'}) " class="createnew-container" style="cursor: pointer;">
             <CreateNewResumeLogo class="create-resume-logo-instance"/>
             <div class="create-resume-text">Create New Resume</div>
           </div>

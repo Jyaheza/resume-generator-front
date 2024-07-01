@@ -1,3 +1,9 @@
+<script setup>
+// Future work
+import { useRouter } from "vue-router";
+const router = useRouter();
+</script>
+
 <template>
     <div class="create-resume">
       <div class="div-2">
@@ -15,7 +21,7 @@
         <EducationGroup />
         <ProjectsGroup />
         <SkillsGroup />
-        <div @click="" class="next" style="cursor: pointer;">
+        <div @click="router.push({ name: 'selecttemplate'})" class="next" style="cursor: pointer;">
           <div class="next-text-wrapper">
             <div class="next-text">NEXT STEP</div>
           </div>
@@ -25,7 +31,7 @@
     </div>
   </template>
   
-  <script>
+<script>
   import ContactInfoGroup from "../components/Groups/ContactInfoGroup.vue";
   import ExperienceGroup from "../components/Groups/ExperienceGroup.vue";
   import EducationGroup from "../components/Groups/EducationGroup.vue";
@@ -44,9 +50,9 @@
       StepsGroups,
     },
   };
-  </script>
+</script>
   
-  <style>
+<style>
   .create-resume {
     background-color: #000235;
     display: flex;
@@ -143,4 +149,4 @@
     width: 151px;
   }
   
-  </style>
+</style>
