@@ -33,8 +33,11 @@
           </div>
         </div>
         <div class="contact-description">
-          <div class="rectangle-14"></div>
-          <v-text-field class="v-text-height-summary" label="Description" style="word-break: break-word;"></v-text-field>
+          <div class="rectangle-14">
+            <v-textarea class="v-text-height-summary" label="Description">
+            </v-textarea>
+          </div>
+          
         </div>
         <div class="save-contact">
           <div class="save-contact-info">
@@ -239,7 +242,7 @@
   
   .contact-info-group .rectangle-10 {
     background-color: #d9d9d9;
-    height: 41px;
+    height: 48px;
     left: 0;
     position: absolute;
     top: 2px;
@@ -270,7 +273,7 @@
   
   .contact-info-group .rectangle-12 {
     background-color: #d9d9d9;
-    height: 40px;
+    height: 48px;
     left: 0;
     position: absolute;
     top: 2px;
@@ -339,10 +342,8 @@
   }
 
   .contact-info-group .v-text-height-summary{
-    min-height: 385px !important;
+    min-height: 295px !important;
     top: 100px; 
-    /* display: flex !important; */
-    /* align-items: center !important; */
   }
   </style>
   
