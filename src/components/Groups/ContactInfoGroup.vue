@@ -37,7 +37,6 @@
             <v-textarea class="v-text-height-summary" label="Description">
             </v-textarea>
           </div>
-          
         </div>
         <div @click="" class="save-contact" style="cursor: pointer;">
           <div class="save-contact-info">

@@ -1,10 +1,60 @@
+<script setup>
+
+function idk() {
+    var foo = document.getElementById('foo');
+    var bar = document.getElementById('bar');
+    var big = document.getElementById('big');
+    var nuts = document.getElementById('nuts');
+    console.log(foo);
+    console.log(bar);
+    console.log(big);
+    console.log(nuts);
+
+    foo.addEventListener('click', ()=>{
+      nuts.style.display = 'none';
+      big.style.display = 'block';
+    })
+}
+
+function idk2() {
+    var foo = document.getElementById('foo');
+    var bar = document.getElementById('bar');
+    var big = document.getElementById('big');
+    var nuts = document.getElementById('nuts');
+    console.log(foo);
+    console.log(bar);
+    console.log(big);
+    console.log(nuts);
+
+    bar.addEventListener('click', ()=>{
+      big.style.display = 'none';
+      nuts.style.display = 'block';
+    })
+}
+</script>
+
 <template>
     <div class="experience-group">
-      <div class="overlap-2">
-        <div class="experience-input" />
-        <div class="experience-title">
+      <div class="experience-title">
           <div class="text-wrapper-3">Experience</div>
-        </div>
+      </div>
+      <div class="experience-input" />
+      <div class="overlap-2" id="big" style="display: none;">
+        <div class="job-role">
+            <div class="rectangle-16">
+              Happy Monday!!!!
+            </div>
+          </div>
+        <button @click="idk2()" id="bar" class="save-to-experience" style="cursor: pointer;">
+          <div class="save-experience-list"> 
+            <div class="save-exp-text-wrapper">
+              <div class="save-exp-text">Add a new job</div>
+            </div>
+          </div>
+        </button>
+        Hello
+      </div>
+      <div class="overlap-2" id="nuts">
         <div class="job-role">
           <div class="rectangle-16">
             <v-text-field label="Job Role" />
@@ -40,13 +90,13 @@
             <v-text-field label="Company" />
           </div>
         </div>
-        <div @click="" class="save-to-experience" style="cursor: pointer;">
+        <button @click="idk()" id="foo" class="save-to-experience" style="cursor: pointer;">
           <div class="save-experience-list"> 
             <div class="save-exp-text-wrapper">
               <div class="save-exp-text">Save To Job List</div>
             </div>
           </div>
-        </div>
+        </button>
       </div>
     </div>
   </template>
@@ -55,6 +105,7 @@
   export default {
     name: "ExperienceGroup",
   };
+
   </script>
   
   <style>
@@ -274,6 +325,26 @@
   .experience-group .v-text-jobdescription-height-summary {
     min-height: 285px !important;
     top: 100px; 
+  }
+
+  .experience-group .switch-enter-from,
+  .switch-leave-to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .experience-group .switch-enter-to,
+  .switch-leave-from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .experience-group .switch-active-enter {
+    transition: all 0.5s ease;
+  }
+
+  .experience-group .switch-active-leave {
+    transition: all 0.5s ease;
   }
   </style>
   
