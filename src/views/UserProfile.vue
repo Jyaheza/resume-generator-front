@@ -104,7 +104,7 @@ function closeEdit() {
         <thead>
           <tr>
             <th class="text-left">Name</th>
-            <th class="text-left">Email</th>
+            <th class="text-left">Role</th>
             <th class="text-left">ID</th>
           </tr>
         </thead>

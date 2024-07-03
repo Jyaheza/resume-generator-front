@@ -5,33 +5,8 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "homepage",
-      component: () => import("./views/Homepage.vue"),
-    },
-    {
-      path: "/login",
       name: "login",
       component: () => import("./views/Login.vue"),
-    },
-    {
-      path: "/signup",
-      name: "signup",
-      component: () => import("./views/SignUp.vue"),
-    },
-    {
-      path: "/studentprofile",
-      name: "studentprofile",
-      component: () => import("./views/ProfilePageStudent.vue"),
-    },
-    {
-      path: "/careerservprofile",
-      name: "careerservprofile",
-      component: () => import("./views/ProfilePageCareerServ.vue"),
-    },
-    {
-      path: "/adminprofile",
-      name: "adminprofile",
-      component: () => import("./views/ProfilePageAdmin.vue"),
     },
     {
       path: "/maintain",
@@ -39,14 +14,19 @@ const router = createRouter({
       component: () => import("./views/StoryMaintain.vue"),
     },
     {
+      path: "/createresume",
+      name: "createresume",
+      component: () => import("./views/CreateResume.vue"),
+    },
+    {
       path: "/stories/:id",
       name: "readStory",
       component: () => import("./views/ReadStory.vue"),
     },
     {
-      path: "/stories",
-      name: "stories",
-      component: () => import("./views/StoriesList.vue"),
+      path: "/resumes",
+      name: "resumes",
+      component: () => import("./views/ResumeList.vue"),
     },
     {
       path: "/characters",
