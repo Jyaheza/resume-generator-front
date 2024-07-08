@@ -164,7 +164,7 @@ function divToggle(addFieldBtn, submitFieldBtn, tableDiv, fieldDiv)
             </v-row>
             <v-row>
                 <v-col class="d-flex justify-end" cols="10">
-                    <v-btn rounded="xl" variant="outlined">Choose Template</v-btn>
+                    <v-btn @click="router.push({ name: 'resumetemplate'})" rounded="xl" variant="outlined">Choose Template</v-btn>
                 </v-col>
             </v-row>
         </div>
