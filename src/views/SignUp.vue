@@ -1,60 +1,126 @@
 <script setup>
 import { useRouter } from "vue-router";
+import { onMounted } from "vue";
+import { ref } from "vue";
+import UserServices from "../services/UserServices.js";
+
 const router = useRouter();
+const isCreateAccount = ref(false);
+let isLoading = ref(false);
+const snackbar = ref({
+  value: false,
+  color: "",
+  text: "",
+});
+const user = ref({
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  role: "Student" // Set user to student by default 
+});
+
+// Uncomment and use this block if you want to redirect authenticated users
+// onMounted(() => {
+//   if (localStorage.getItem("user") !== null) {
+//     router.push({ name: "ProfilePage"+localStorage.getItem("user").role});
+//   }
+// });
+
+async function createAccount() {
+  isLoading.value = true;
+  try {
+    await UserServices.addUser(user.value);
+    snackbar.value = {
+      value: true,
+      color: "green",
+      text: "Account created successfully!",
+    };
+    router.push({ name: "login" });
+    user.value = {};
+    isCreateAccount.value = false;
+  } catch (error) {
+    console.error(error);
+    snackbar.value = {
+      value: true,
+      color: "error",
+      text: error.response?.data?.message || "Error creating account",
+    };
+  } finally {
+    isLoading.value = false;
+  }
+}
 </script>
 
 <template>
-    <div class="sign-up">
-      <div class="div">
-        <div class="nav-bar">
-          <div @click="router.push({ name: 'homepage'})" class="resume-builder" style="cursor: pointer;">
-            Resume
-            <br />
-            Builder
-          </div>
-          <div @click="router.push({ name: 'login'})" class="text-wrapper" style="cursor: pointer;">Login</div>
-          <div @click="router.push({ name: 'signup'})" class="text-wrapper-2" style="cursor: pointer;">Sign Up</div>
+  <div class="sign-up">
+    <div class="div">
+      <div class="nav-bar">
+        <div @click="router.push({ name: 'homepage'})" class="resume-builder" style="cursor: pointer;">
+          Resume
+          <br />
+          Builder
         </div>
-        <SignUpLogo
-          class="object-other-12"
-          :signUpLogo="signUpLogo"
-          objectOtherClassName="object-other-instance"
-        />
-        <div @click="" class="group" style="cursor: pointer;">
-          <div class="overlap-group-wrapper">
-            <div class="overlap-group">
-              <div class="text-wrapper-3">SIGN UP</div>
-            </div>
+        <div @click="router.push({ name: 'login'})" class="text-wrapper" style="cursor: pointer;">Login</div>
+        <div @click="router.push({ name: 'signup'})" class="text-wrapper-2" style="cursor: pointer;">Sign Up</div>
+      </div>
+      <SignUpLogo
+        class="object-other-12"
+        :signUpLogo="signUpLogo"
+        objectOtherClassName="object-other-instance"
+      />
+      <div class="group" style="cursor: pointer;">
+        <div class="overlap-group-wrapper">
+          <div class="overlap-group">
+            <v-card-actions>
+              <v-btn @click="createAccount()"> <div class="text-wrapper-3">SIGN UP</div> </v-btn>
+            </v-card-actions>
           </div>
         </div>
+      </div>
+      <v-card-text>
         <div class="email">
           <div class="textFieldBorder" />
           <div class="textField" />
-          <v-text-field label="Email"></v-text-field>
-        </div>     
+          <v-text-field v-model="user.email" label="Email" required></v-text-field>
+        </div>
         <div class="password">
           <div class="overlap">
             <div class="textFieldBorder" />
             <div class="textField" />
-            <v-text-field label="Password"></v-text-field>
+            <v-text-field v-model="user.password" label="Password" type="password" required></v-text-field>
           </div>
-        </div>   
+        </div>
         <div class="first-name">
           <div class="overlap">
             <div class="textFieldBorder" />
             <div class="textField" />
-            <v-text-field label="First name"></v-text-field>
+            <v-text-field v-model="user.firstName" label="First name" required></v-text-field>
           </div>
         </div>
         <div class="last-name">
           <div class="overlap">
             <div class="textFieldBorder" />
             <div class="textField" />
-            <v-text-field label="Last name"></v-text-field>
+            <v-text-field v-model="user.lastName" label="Last name" required></v-text-field>
           </div>
         </div>
-      </div>
+      </v-card-text>
+      <v-snackbar v-model="snackbar.value" rounded="pill">
+        {{ snackbar.text }}
+
+        <template v-slot:actions>
+          <v-btn
+            :color="snackbar.color"
+            variant="text"
+            @click="closeSnackBar()"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
     </div>
+  </div>
 </template>
 
 <script>
@@ -72,9 +138,9 @@ data() {
   },
 };
 </script>
-  
+
 <style>
-  .sign-up {
+ .sign-up {
     background-color: #000235;
     display: flex;
     flex-direction: row;
