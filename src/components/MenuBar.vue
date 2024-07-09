@@ -7,7 +7,7 @@ import UserServices from "../services/UserServices";
 const router = useRouter();
 
 const user = ref(null);
-const title = ref("Bedtime Stories");
+const title = ref("Resume Generator");
 const logoURL = ref("");
 
 onMounted(() => {
@@ -42,28 +42,25 @@ function logout() {
 
 <template>
   <div>
-    <v-app-bar color="primary" app dark>
-      <router-link :to="{ name: 'stories' }">
+    <v-app-bar color="#000235" app dark>
+      <!-- <router-link :to="{ name: 'stories' }"> -->
         <v-img
+          @click="router.push({ name: 'resumes'})"
+          style="cursor: pointer;"
           class="mx-2"
-          :src="logoURL"
+          :src="'https://c.animaapp.com/xe30pEHc/img/object-other-12.png'"
           height="50"
           width="50"
           contain
         ></v-img>
-      </router-link>
+      <!-- </router-link> -->
 
       <v-toolbar-title class="title">
         {{ title }}
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn v-if="user !== null" class="mx-2" :to="{ name: 'stories' }">Stories</v-btn>
-      <v-btn v-if="user !== null" class="mx-2" :to="{ name: 'maintain' }">
-        Maintain
-      </v-btn>
-
-      <v-btn v-if="user === null" class="mx-2" :to="{ name: 'login' }">
+      <v-btn v-if="user === null" class="mx-2" variant="text" :to="{ name: 'login' }">
         Login
       </v-btn>
       <v-menu v-if="user !== null" min-width="200px" rounded>
@@ -76,7 +73,7 @@ function logout() {
             </v-avatar>
           </v-btn>
         </template>
-        <v-card>
+        <v-card color="">
           <v-card-text>
             <div class="mx-auto text-center">
               <v-avatar color="accent">
@@ -98,3 +95,7 @@ function logout() {
     </v-app-bar>
   </div>
 </template>
+
+<style>
+
+</style>
