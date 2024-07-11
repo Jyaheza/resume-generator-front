@@ -17,6 +17,7 @@ const user = ref({
   lastName: "",
   email: "",
   password: "",
+  role: "Student" // Set user to student by default 
 });
 
 onMounted(async () => {
