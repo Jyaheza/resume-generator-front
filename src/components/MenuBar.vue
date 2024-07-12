@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import UserServices from '../services/UserServices';
 
+
 const router = useRouter();
 
 const drawer = ref(true);
@@ -17,8 +18,8 @@ onMounted(() => {
     user.value.lastName = JSON.parse(localStorage.getItem('menuBarLast'));
     user.value.email = JSON.parse(localStorage.getItem('menuBarEmail'));
   }
-  else{
-    router.push({name: "login"});
+  else {
+    router.push({ name: "login" });
   }
 });
 
@@ -35,6 +36,19 @@ function logout() {
   localStorage.removeItem('menuBarLast');
   user.value = null;
   router.push({ name: 'login' });
+}
+
+function redirectToHome() {
+  /*
+  * Function to redirect user to proper homepage
+  * based on the role
+  */
+  if (user.value.role == 'admin') {
+    router.push({ name: "admin" });
+  }
+  if (user.value.role == 'student') {
+    router.push({ name: "resumes" });
+  }
 }
 
 const isMenuVisible = (menuItem) => {
@@ -54,95 +68,73 @@ const isMenuVisible = (menuItem) => {
 </script>
 
 <template>
-    <v-navigation-drawer
-      expand-on-hover rail
-      v-model="drawer"
-      app
-      permanent
+  <v-navigation-drawer expand-on-hover rail v-model="drawer" app permanent color="#000235">
+    <v-list-item nav v-if='user'>
+      <v-avatar color="accent" @click="router.push({ name: 'profile' })">
+        <span class="white--text text-h5">
+          {{ `${user.firstName.charAt(0)}${user.lastName.charAt(0)}` }}
+        </span>
+      </v-avatar>
+      <template v-slot:append>
+        <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
+      </template>
+    </v-list-item>
 
-      color="#000235"
-    >
-      <v-list-item nav v-if = 'user'>
-        <v-avatar color="accent" @click="router.push({ name: 'profile'})">
-                <span class="white--text text-h5">
-                  {{ `${user.firstName.charAt(0)}${user.lastName.charAt(0)}` }}
-                </span>
-              </v-avatar>
-          <template v-slot:append>
-            <v-btn
-              icon="mdi-chevron-left"
-              variant="text"
-              @click.stop="rail = !rail"
-            ></v-btn>
-          </template>
-      </v-list-item>
-       
-      <v-divider></v-divider>
+    <v-divier></v-divier>
 
-      <v-list density="compact" nav>
-        <v-list-item
-          v-if="isMenuVisible('createResume')"
-          prepend-icon="mdi-pencil"
-          title="Create Resume"
-          @click="router.push({ name: 'createResume' })"
-        ></v-list-item>
-        <v-list-item
-          v-if="isMenuVisible('matchWithJob')"
-          prepend-icon="mdi-briefcase-search"
-          title="Match With Job"
-          @click="router.push({ name: 'matchWithJob' })"
-        ></v-list-item>
-        <v-list-item
-          v-if="isMenuVisible('review')"
-          prepend-icon="mdi-star"
-          title="Review"
-          @click="router.push({ name: 'review' })"
-        ></v-list-item>
-        <v-list-item
-          v-if="isMenuVisible('home')"
-          prepend-icon="mdi-home"
-          title="Home"
-          @click="router.push({ name: 'resumes' })"
-        ></v-list-item>
-        <v-list-item
-          v-if="isMenuVisible('manageUsers')"
-          prepend-icon="mdi-account-multiple"
-          title="Manage Users"
-          @click="router.push({ name: 'manageUsers' })"
-        ></v-list-item>
-        <v-list-item
-          v-if="user"
-          prepend-icon="mdi-logout"
-          title="Logout"
-          @click="logout()"
-        ></v-list-item>
-        <v-list-item
-          v-if="!user"
-          prepend-icon="mdi-login"
-          title="Login"
-          @click="router.push({ name: 'login' })"
-        ></v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+    <v-list density="compact" nav>
+      <v-list-item v-if="isMenuVisible('createResume')" prepend-icon="mdi-pencil" title="Create Resume"
+        @click="router.push({ name: 'createResume' })"></v-list-item>
+      <v-list-item v-if="isMenuVisible('matchWithJob')" prepend-icon="mdi-briefcase-search" title="Match With Job"
+        @click="router.push({ name: 'matchWithJob' })"></v-list-item>
+      <v-list-item id="seeResumesBtn" v-if="isMenuVisible('review')" prepend-icon="mdi-star" title="Review Resumes"
+        @click="toggleToResumes()"></v-list-item>
+      <v-list-item v-if="isMenuVisible('home')" prepend-icon="mdi-home" title="Home"
+        @click="redirectToHome()"></v-list-item>
+      <v-list-item v-if="isMenuVisible('manageUsers')" prepend-icon="mdi-account-multiple" title="Manage Users"
+        id="seeUsersBtn" @click="toggleToUsers()"></v-list-item>
+      <v-list-item v-if="user" prepend-icon="mdi-logout" title="Logout" @click="logout()"></v-list-item>
+      <v-list-item v-if="!user" prepend-icon="mdi-login" title="Login"
+        @click="router.push({ name: 'login' })"></v-list-item>
+    </v-list>
+  </v-navigation-drawer>
 
-    <v-app-bar app color="#000235" dark>
-      <v-img
-          @click="router.push({ name: 'resumes'})"
-          style="cursor: pointer;"
-          class="mx-2"
-          :src="'https://c.animaapp.com/xe30pEHc/img/object-other-12.png'"
-          height="50"
-          width="50"
-          contain
-        ></v-img>
-      <!-- </router-link> -->
+  <v-app-bar app color="#000235" dark>
+    <v-img @click="router.push({ name: 'resumes' })" style="cursor: pointer;" class="mx-2"
+      :src="'https://c.animaapp.com/xe30pEHc/img/object-other-12.png'" height="50" width="50" contain></v-img>
+    <!-- </router-link> -->
 
-      <v-toolbar-title class="title">
-        {{ title }}
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-app-bar>
+    <v-toolbar-title class="title">
+      {{ title }}
+    </v-toolbar-title>
+    <v-spacer></v-spacer>
+  </v-app-bar>
 </template>
+
+<script>
+// Have the menu bar buttons switch between resumes 
+// and users functions here
+// Admin only
+function toggleToUsers() {
+  var users = document.getElementById('users');
+  var resumes = document.getElementById('resumes');
+  const hide = el => el.style.setProperty("display", "none");
+  const show = el => el.style.setProperty("display", "block");
+  hide(resumes);
+  show(users);
+}
+// Have the menu bar buttons switch between resumes 
+// and users functions here
+// Admin only
+function toggleToResumes() {
+  var users = document.getElementById('users');
+  var resumes = document.getElementById('resumes');
+  const hide = el => el.style.setProperty("display", "none");
+  const show = el => el.style.setProperty("display", "block");
+  hide(users);
+  show(resumes);
+}
+</script>
 
 <style scoped>
 /* Add any custom styles here */
