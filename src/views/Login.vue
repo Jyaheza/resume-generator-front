@@ -28,6 +28,7 @@ onMounted(async () => {
 
 async function createAccount() {
   isLoading.value = true;
+  console.log(user.value);
   await UserServices.addUser(user.value)
     .then(() => {
       snackbar.value.value = true;
@@ -61,9 +62,9 @@ async function login() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = "Login successful!";
-      // router.push({ name: "stories" });
+      //router.push({ name: "resumes" });
       isLoading.value = false;
-      // router.push({ name: "stories" });
+       router.push({ name: "resumes" });
     })
     .catch((error) => {
       console.log(error);
@@ -112,7 +113,7 @@ function closeSnackBar() {
           >
           <v-spacer></v-spacer>
 
-          <v-btn variant="elevated" color="#000235" @click="router.push({ name: 'resumes'})">Sign in</v-btn>
+          <v-btn variant="elevated" color="#000235" @click="login()">Sign in</v-btn>
         </v-card-actions>
       </v-card>
 
