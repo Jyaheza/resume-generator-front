@@ -8,6 +8,7 @@ const router = useRouter();
 const drawer = ref(true);
 const rail = ref(true);
 const user = ref(null);
+const title = ref("Resume Generator");
 
 onMounted(() => {
   user.value = JSON.parse(localStorage.getItem('user'));
@@ -123,8 +124,19 @@ const isMenuVisible = (menuItem) => {
     </v-navigation-drawer>
 
     <v-app-bar app color="#000235" dark>
+      <v-img
+          @click="router.push({ name: 'resumes'})"
+          style="cursor: pointer;"
+          class="mx-2"
+          :src="'https://c.animaapp.com/xe30pEHc/img/object-other-12.png'"
+          height="50"
+          width="50"
+          contain
+        ></v-img>
+      <!-- </router-link> -->
+
       <v-toolbar-title class="title">
-        {{ 'Resume Generator' }}
+        {{ title }}
       </v-toolbar-title>
       <v-spacer></v-spacer>
     </v-app-bar>
