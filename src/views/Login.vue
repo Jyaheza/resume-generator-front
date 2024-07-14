@@ -22,19 +22,19 @@ const user = ref({
 
 onMounted(async () => {
   if (localStorage.getItem("user") !== null) {
-    // router.push({ name: "stories" });
+    router.push({ name: "resumes" });
   }
 });
 
 async function createAccount() {
   isLoading.value = true;
-  console.log(user.value);
+  user.value.role = "student";
   await UserServices.addUser(user.value)
     .then(() => {
       snackbar.value.value = true;
       snackbar.value.color = "green";   
       snackbar.value.text = "Account created successfully!";
-      router.push({ name: "login" });
+      router.push({ name: "resumes" });
       user.value = {};
       isCreateAccount.value = false;
       isLoading.value = false;
@@ -62,7 +62,7 @@ async function login() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = "Login successful!";
-      //router.push({ name: "resumes" });
+      router.push({ name: "resumes" });
       isLoading.value = false;
        router.push({ name: "resumes" });
     })

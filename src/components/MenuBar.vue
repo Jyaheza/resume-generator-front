@@ -17,6 +17,9 @@ onMounted(() => {
     user.value.lastName = JSON.parse(localStorage.getItem('menuBarLast'));
     user.value.email = JSON.parse(localStorage.getItem('menuBarEmail'));
   }
+  else{
+    router.push({name: "login"});
+  }
 });
 
 function logout() {
