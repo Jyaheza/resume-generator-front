@@ -41,11 +41,11 @@ const isMenuVisible = (menuItem) => {
   if (!user.value) return false;
   const role = user.value.role; // change role = "Admin" or "career services" to see the menu items change
   switch (role) {
-    case 'Admin':
+    case 'admin':
       return true;
     case 'career services':
       return menuItem !== 'manageUsers';
-    case 'Student':
+    case 'student':
       return ['createResume', 'home', 'matchWithJob'].includes(menuItem);
     default:
       return false;
