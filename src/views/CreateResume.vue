@@ -365,7 +365,7 @@ v-card-title:hover {
             <v-dialog v-model="dialog" max-width="600px">
                 <v-card>
                     <v-img v-if="selectedTemplateId"
-                        :src="`../template-thumbnails/template${selectedTemplateId}-thumbnail.png`"
+                        :src="`../../public/template-thumbnails/template${selectedTemplateId}-thumbnail.png`"
                         alt="Template Thumbnail" style="max-width: 100%;" contain></v-img>
                     <v-card-actions>
                         <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
@@ -398,7 +398,7 @@ v-card-title:hover {
                         <v-row style="cursor: pointer;">
                             <v-col cols="12" sm="4" md="3" lg="3" @click="handleThumbnailClick(template.id)">
                                 <!-- Thumbnail Image -->
-                                <img :src="`../template-thumbnails/template${index + 1}-thumbnail.png`"
+                                <img :src="`../../public/template-thumbnails/template${index + 1}-thumbnail.png`"
                                     alt="Template Thumbnail" style="max-width: 150px; max-height: 150px;"
                                     class="thumbnail-image" />
                             </v-col>
