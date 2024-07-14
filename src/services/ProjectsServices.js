@@ -5,7 +5,7 @@ export default {
     return apiClient.get("projects");
   },
   getProjectsByUserId(userId) {
-    return apiClient.get(`projects/${userId}`);
+    return apiClient.get(`projects/user/${userId}`);
   },
   getProject(id) {
     return apiClient.get(`projects/${id}`);

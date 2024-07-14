@@ -5,13 +5,13 @@ export default {
     return apiClient.get("resumes");
   },
   getResumesByUserId(userId) {
-    return apiClient.get(`resumes/${userId}`);
+    return apiClient.get(`resumes/user/${userId}`);
   },
   getResume(id) {
     return apiClient.get(`resumes/${id}`);
   },
-  addResume(userId, resumeParams) {
-    return apiClient.post(`resumes/${userId}`,resumeParams);
+  addResume(resumeParams) {
+    return apiClient.post(`resumes`, resumeParams);
   },
   updateResume(resumeId, resume) {
     return apiClient.put(`resumes/${resumeId}`, resume);

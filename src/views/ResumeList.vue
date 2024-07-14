@@ -1,11 +1,73 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-
-
+import ResumeServices from "../services/ResumeServices";
 
 const router = useRouter();
+const resumesData = ref([]);
 
+const user = ref(null);
+user.value = JSON.parse(localStorage.getItem("user"));
+
+onMounted(async () => {
+  if (user.value) {
+    try {
+      const resumeResponse = await ResumeServices.getResumesByUserId(user.value.id);
+      const resumesResponseData = resumeResponse.data;
+      resumesData.value = resumesResponseData.length > 0 ? resumesResponseData : [];
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      resumesData.value = [];
+    }
+  }
+});
+
+async function openResumePdf(pdfData) {
+  try {
+    // Convert array of numbers to Uint8Array
+    const uint8Array = new Uint8Array(pdfData);
+
+    // Convert Uint8Array to b64 string
+    let b64String = '';
+    uint8Array.forEach((byte) => {
+      b64String += String.fromCharCode(byte);
+    });
+
+    // Create Blob from base64 string
+    const blob = b64toBlob(b64String, 'application/pdf');
+
+    // Create a temporary URL for the Blob
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Open PDF in a new tab
+    window.open(blobUrl, '_blank');
+
+    URL.revokeObjectURL(blobUrl);
+
+  } catch (error) {
+    console.error('Error saving PDF:', error);
+  }
+}
+
+function b64toBlob(base64Data, contentType = '', sliceSize = 512) {
+  const byteCharacters = atob(base64Data);
+  const byteArrays = [];
+  
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    const slice = byteCharacters.slice(offset, offset + sliceSize);
+    
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+    
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+  
+  const blob = new Blob(byteArrays, { type: contentType });
+  return blob;
+}
 
 </script>
 
@@ -21,7 +83,7 @@ const router = useRouter();
         </v-btn>
       </v-row>
       <v-row align="center" clas="mb-4">
-        <v-btn variant="outlined" @click="router.push({ name: 'createresume'})">
+        <v-btn variant="outlined" @click="router.push({ name: 'createresume' })">
           Create a resume
         </v-btn>
       </v-row>
@@ -30,20 +92,31 @@ const router = useRouter();
           Match Resume With Job
         </v-btn>
       </v-row>
-
-      <v-dialog persistent width="800">
-        <v-card class="rounded-lg elevation-5">
-          <v-card-title class="headline mb-2">Add Story</v-card-title>
-          <v-card-text>
-            <v-progress-linear v-if="loading" indeterminate color="blue" class="mb-2"></v-progress-linear>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn variant="flat" color="secondary" @click="closeAdd">Close</v-btn>
-            <v-btn :disabled="loading" variant="flat" color="primary" @click="">Add Story</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-     </div>
+      <template v-if="resumesData && resumesData.length > 0">
+        <v-container>
+          <v-row>
+            <template v-for="resume in resumesData" :key="resume.id">
+              <v-col cols="12">
+                <v-card class="mb-3">
+                  <v-card-title>{{ resume.title }}</v-card-title>
+                  <v-card-text>
+                    <v-btn @click="openResumePdf(resume.resume_pdf.data)" color="primary">View PDF</v-btn>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </template>
+          </v-row>
+        </v-container>
+      </template>
+      <template v-else>
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <p>No resumes found.</p>
+            </v-col>
+          </v-row>
+        </v-container>
+      </template>
+    </div>
   </v-container>
 </template>

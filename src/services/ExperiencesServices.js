@@ -5,7 +5,7 @@ export default {
     return apiClient.get("experiences");
   },
   getExperiencesByUserId(userId) {
-    return apiClient.get(`experiences/${userId}`);
+    return apiClient.get(`experiences/user/${userId}`);
   },
   getExperience(id) {
     return apiClient.get(`experiences/${id}`);

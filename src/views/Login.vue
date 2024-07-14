@@ -17,22 +17,24 @@ const user = ref({
   lastName: "",
   email: "",
   password: "",
+  role: ""
 });
 
 onMounted(async () => {
   if (localStorage.getItem("user") !== null) {
-    // router.push({ name: "stories" });
+    router.push({ name: "resumes" });
   }
 });
 
 async function createAccount() {
   isLoading.value = true;
+  user.value.role = "student";
   await UserServices.addUser(user.value)
     .then(() => {
       snackbar.value.value = true;
       snackbar.value.color = "green";   
       snackbar.value.text = "Account created successfully!";
-      router.push({ name: "login" });
+      router.push({ name: "resumes" });
       user.value = {};
       isCreateAccount.value = false;
       isLoading.value = false;
@@ -60,9 +62,8 @@ async function login() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = "Login successful!";
-      // router.push({ name: "stories" });
+      router.push({ name: "resumes" });
       isLoading.value = false;
-      // router.push({ name: "stories" });
     })
     .catch((error) => {
       console.log(error);
@@ -111,7 +112,7 @@ function closeSnackBar() {
           >
           <v-spacer></v-spacer>
 
-          <v-btn variant="elevated" color="#000235" @click="router.push({ name: 'resumes'})">Sign in</v-btn>
+          <v-btn variant="elevated" color="#000235" @click="login()">Sign in</v-btn>
         </v-card-actions>
       </v-card>
 

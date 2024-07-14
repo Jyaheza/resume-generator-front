@@ -5,7 +5,7 @@ export default {
     return apiClient.get("skills");
   },
   getSkillsByUserId(userId) {
-    return apiClient.get(`skills/${userId}`);
+    return apiClient.get(`skills/user/${userId}`);
   },
   getSkill(id) {
     return apiClient.get(`skills/${id}`);

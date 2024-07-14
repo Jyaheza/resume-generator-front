@@ -5,7 +5,7 @@ export default {
     return apiClient.get("certificates");
   },
   getCertificatesByUserId(userId) {
-    return apiClient.get(`certificates/${userId}`);
+    return apiClient.get(`certificates/user/${userId}`);
   },
   getCertificate(id) {
     return apiClient.get(`certificates/${id}`);
