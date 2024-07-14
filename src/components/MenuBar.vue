@@ -54,7 +54,6 @@ const isMenuVisible = (menuItem) => {
 </script>
 
 <template>
-  <v-app>
     <v-navigation-drawer
       expand-on-hover rail
       v-model="drawer"
@@ -143,11 +142,6 @@ const isMenuVisible = (menuItem) => {
       </v-toolbar-title>
       <v-spacer></v-spacer>
     </v-app-bar>
-
-    <v-main>
-      <router-view />
-    </v-main>
-  </v-app>
 </template>
 
 <style scoped>
