@@ -22,7 +22,7 @@ const user = ref({
 
 onMounted(async () => {
   if (localStorage.getItem("user") !== null) {
-    // router.push({ name: "stories" });
+    router.push({ name: "resumes" });
   }
 });
 
@@ -34,7 +34,7 @@ async function createAccount() {
       snackbar.value.value = true;
       snackbar.value.color = "green";   
       snackbar.value.text = "Account created successfully!";
-      router.push({ name: "login" });
+      router.push({ name: "resumes" });
       user.value = {};
       isCreateAccount.value = false;
       isLoading.value = false;
@@ -62,7 +62,7 @@ async function login() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = "Login successful!";
-      //router.push({ name: "resumes" });
+      // router.push({ name: "stories" });
       isLoading.value = false;
        router.push({ name: "resumes" });
     })
