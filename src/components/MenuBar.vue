@@ -36,7 +36,7 @@ function logout() {
 
 const isMenuVisible = (menuItem) => {
   if (!user.value) return false;
-  const role = user.value.role;
+  const role = user.value.role; // change role = "Admin" or "career services" to see the menu items change
   switch (role) {
     case 'Admin':
       return true;
