@@ -1,101 +1,140 @@
 <script setup>
-import moonLogo from "/moon-logo.png";
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import UserServices from "../services/UserServices";
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import UserServices from '../services/UserServices';
 
 const router = useRouter();
 
+const drawer = ref(true);
+const rail = ref(true);
 const user = ref(null);
-const title = ref("Resume Generator");
-const logoURL = ref("");
 
 onMounted(() => {
-  logoURL.value = moonLogo;
-  user.value = JSON.parse(localStorage.getItem("user"));
-  if (user.value != null)
-  {
-    // Make sure theres a user logged in and take the first name and last name of the user
-    user.value.firstName = JSON.parse(localStorage.getItem("menuBarFirst"));
-    user.value.lastName = JSON.parse(localStorage.getItem("menuBarLast"));
-    user.value.email = JSON.parse(localStorage.getItem("menuBarEmail"));
+  user.value = JSON.parse(localStorage.getItem('user'));
+  if (user.value != null) {
+    user.value.firstName = JSON.parse(localStorage.getItem('menuBarFirst'));
+    user.value.lastName = JSON.parse(localStorage.getItem('menuBarLast'));
+    user.value.email = JSON.parse(localStorage.getItem('menuBarEmail'));
   }
 });
 
 function logout() {
   UserServices.logoutUser()
-    .then((data) => {
+    .then(data => {
       console.log(data);
     })
-    .catch((error) => {
+    .catch(error => {
       console.log(error);
     });
-  // Release the local storage items
-  localStorage.removeItem("user");
-  localStorage.removeItem("menuBarFirst");
-  localStorage.removeItem("menuBarLast");
+  localStorage.removeItem('user');
+  localStorage.removeItem('menuBarFirst');
+  localStorage.removeItem('menuBarLast');
   user.value = null;
-  router.push({ name: "login" });
+  router.push({ name: 'login' });
 }
 
+const isMenuVisible = (menuItem) => {
+  if (!user.value) return false;
+  const role = user.value.role;
+  switch (role) {
+    case 'Admin':
+      return true;
+    case 'career services':
+      return menuItem !== 'manageUsers';
+    case 'Student':
+      return ['createResume', 'home', 'matchWithJob'].includes(menuItem);
+    default:
+      return false;
+  }
+};
 </script>
 
 <template>
-  <div>
-    <v-app-bar color="#000235" app dark>
-      <!-- <router-link :to="{ name: 'stories' }"> -->
-        <v-img
-          @click="router.push({ name: 'resumes'})"
-          style="cursor: pointer;"
-          class="mx-2"
-          :src="'https://c.animaapp.com/xe30pEHc/img/object-other-12.png'"
-          height="50"
-          width="50"
-          contain
-        ></v-img>
-      <!-- </router-link> -->
+  <v-app>
+    <v-navigation-drawer
+      expand-on-hover rail
+      v-model="drawer"
+      app
+      permanent
 
+      color="#000235"
+    >
+      <v-list-item nav v-if = 'user'>
+        <v-avatar color="accent" @click="router.push({ name: 'profile'})">
+                <span class="white--text text-h5">
+                  {{ `${user.firstName.charAt(0)}${user.lastName.charAt(0)}` }}
+                </span>
+              </v-avatar>
+          <template v-slot:append>
+            <v-btn
+              icon="mdi-chevron-left"
+              variant="text"
+              @click.stop="rail = !rail"
+            ></v-btn>
+          </template>
+      </v-list-item>
+       
+      <v-divier></v-divier>
+
+      <v-list density="compact" nav>
+        <v-list-item
+          v-if="isMenuVisible('createResume')"
+          prepend-icon="mdi-pencil"
+          title="Create Resume"
+          @click="router.push({ name: 'createResume' })"
+        ></v-list-item>
+        <v-list-item
+          v-if="isMenuVisible('matchWithJob')"
+          prepend-icon="mdi-briefcase-search"
+          title="Match With Job"
+          @click="router.push({ name: 'matchWithJob' })"
+        ></v-list-item>
+        <v-list-item
+          v-if="isMenuVisible('review')"
+          prepend-icon="mdi-star"
+          title="Review"
+          @click="router.push({ name: 'review' })"
+        ></v-list-item>
+        <v-list-item
+          v-if="isMenuVisible('home')"
+          prepend-icon="mdi-home"
+          title="Home"
+          @click="router.push({ name: 'resumes' })"
+        ></v-list-item>
+        <v-list-item
+          v-if="isMenuVisible('manageUsers')"
+          prepend-icon="mdi-account-multiple"
+          title="Manage Users"
+          @click="router.push({ name: 'manageUsers' })"
+        ></v-list-item>
+        <v-list-item
+          v-if="user"
+          prepend-icon="mdi-logout"
+          title="Logout"
+          @click="logout()"
+        ></v-list-item>
+        <v-list-item
+          v-if="!user"
+          prepend-icon="mdi-login"
+          title="Login"
+          @click="router.push({ name: 'login' })"
+        ></v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar app color="#000235" dark>
       <v-toolbar-title class="title">
-        {{ title }}
+        {{ 'Resume Generator' }}
       </v-toolbar-title>
       <v-spacer></v-spacer>
-
-      <v-btn v-if="user === null" class="mx-2" variant="text" :to="{ name: 'login' }">
-        Login
-      </v-btn>
-      <v-menu v-if="user !== null" min-width="200px" rounded>
-        <template v-slot:activator="{ props }">
-          <v-btn icon v-bind="props">
-            <v-avatar class="mx-auto text-center" color="accent" size="large">
-              <span class="white--text font-weight-bold">{{
-                `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
-              }}</span>
-            </v-avatar>
-          </v-btn>
-        </template>
-        <v-card color="">
-          <v-card-text>
-            <div class="mx-auto text-center">
-              <v-avatar color="accent">
-                <span class="white--text text-h5">{{
-                  `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
-                }}</span>
-              </v-avatar>
-              <h3>{{ `${user.firstName} ${user.lastName}` }}</h3>
-              <p class="text-caption mt-1">
-                {{ user.email }}
-              </p>
-              <v-divider class="my-3"></v-divider>
-              <v-btn rounded variant="text" @click="router.push({ name: 'profile'})"> Profile </v-btn>
-              <v-btn rounded variant="text" @click="logout()"> Logout </v-btn>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-menu>
     </v-app-bar>
-  </div>
+
+    <v-main>
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
 
-<style>
-
+<style scoped>
+/* Add any custom styles here */
 </style>
