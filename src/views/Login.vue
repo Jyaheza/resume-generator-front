@@ -28,7 +28,7 @@ onMounted(async () => {
 
 async function createAccount() {
   isLoading.value = true;
-  console.log(user.value);
+  user.value.role = "student";
   await UserServices.addUser(user.value)
     .then(() => {
       snackbar.value.value = true;
@@ -62,7 +62,7 @@ async function login() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = "Login successful!";
-      // router.push({ name: "stories" });
+      router.push({ name: "resumes" });
       isLoading.value = false;
        router.push({ name: "resumes" });
     })
