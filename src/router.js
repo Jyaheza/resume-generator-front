@@ -9,8 +9,8 @@ const router = createRouter({
       component: () => import("./views/Login.vue"),
     },
     {
-      path: "/createresume",
-      name: "createresume",
+      path: "/createResume",
+      name: "createResume",
       component: () => import("./views/CreateResume.vue"),
     },
     {

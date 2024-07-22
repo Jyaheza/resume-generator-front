@@ -82,22 +82,51 @@ const isMenuVisible = (menuItem) => {
 
     <v-divier></v-divier>
 
-    <v-list density="compact" nav>
-      <v-list-item v-if="isMenuVisible('createResume')" prepend-icon="mdi-pencil" title="Create Resume"
-        @click="router.push({ name: 'createResume' })"></v-list-item>
-      <v-list-item v-if="isMenuVisible('matchWithJob')" prepend-icon="mdi-briefcase-search" title="Match With Job"
-        @click="router.push({ name: 'matchWithJob' })"></v-list-item>
-      <v-list-item id="seeResumesBtn" v-if="isMenuVisible('review')" prepend-icon="mdi-star" title="Review Resumes"
-        @click="toggleToResumes()"></v-list-item>
-      <v-list-item v-if="isMenuVisible('home')" prepend-icon="mdi-home" title="Home"
-        @click="redirectToHome()"></v-list-item>
-      <v-list-item v-if="isMenuVisible('manageUsers')" prepend-icon="mdi-account-multiple" title="Manage Users"
-        id="seeUsersBtn" @click="toggleToUsers()"></v-list-item>
-      <v-list-item v-if="user" prepend-icon="mdi-logout" title="Logout" @click="logout()"></v-list-item>
-      <v-list-item v-if="!user" prepend-icon="mdi-login" title="Login"
-        @click="router.push({ name: 'login' })"></v-list-item>
-    </v-list>
-  </v-navigation-drawer>
+      <v-list density="compact" nav>
+        <v-list-item
+          v-if="isMenuVisible('createResume')"
+          prepend-icon="mdi-pencil"
+          title="Create Resume"
+          @click="router.push({ name: 'createResume' })"
+        ></v-list-item>
+        <v-list-item
+          v-if="isMenuVisible('matchWithJob')"
+          prepend-icon="mdi-briefcase-search"
+          title="Match With Job"
+          @click="router.push({ name: 'matchWithJob' })"
+        ></v-list-item>
+        <v-list-item
+          v-if="isMenuVisible('review')"
+          prepend-icon="mdi-star"
+          title="Review"
+          @click="router.push({ name: 'review' })"
+        ></v-list-item>
+        <v-list-item
+          v-if="isMenuVisible('home')"
+          prepend-icon="mdi-home"
+          title="Home"
+          @click="router.push({ name: 'resumes' })"
+        ></v-list-item>
+        <v-list-item
+          v-if="isMenuVisible('manageUsers')"
+          prepend-icon="mdi-account-multiple"
+          title="Manage Users"
+          @click="router.push({ name: 'manageUsers' })"
+        ></v-list-item>
+        <v-list-item
+          v-if="user"
+          prepend-icon="mdi-logout"
+          title="Logout"
+          @click="logout()"
+        ></v-list-item>
+        <v-list-item
+          v-if="!user"
+          prepend-icon="mdi-login"
+          title="Login"
+          @click="router.push({ name: 'login' })"
+        ></v-list-item>
+      </v-list>
+    </v-navigation-drawer>
 
   <v-app-bar app color="#000235" dark>
     <v-img @click="router.push({ name: 'resumes' })" style="cursor: pointer;" class="mx-2"

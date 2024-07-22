@@ -269,7 +269,7 @@ function closeSnackBar() {
                   <span class="text-h5">You haven't generated any resumes...</span>
                 </v-col>
                 <v-col cols="12 d-flex justify-center align-center">
-                  <v-btn color="primary" @click="router.push({ name: 'createresume' });">Generate A Resume</v-btn>
+                  <v-btn color="primary" @click="router.push({ name: 'createResume' });">Generate A Resume</v-btn>
                 </v-col>
               </v-row>
             </v-container>
