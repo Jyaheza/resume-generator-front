@@ -28,6 +28,36 @@ const router = createRouter({
       name: "profile",
       component: () => import("./views/UserProfile.vue"),
     },
+    {
+      path: "/userCrud",
+      name: "userCrud",
+      component: () => import("./views/UserCrud.vue"),
+    },
+    {
+      path: "/certificate",
+      name: "certificate",
+      component: () => import("./views/UserCertificate.vue"),
+    },
+    {
+      path: "/education",
+      name: "education",
+      component: () => import("./views/UserEducation.vue"),
+    },
+    {
+      path: "/experience",
+      name: "experience",
+      component: () => import("./views/UserExperience.vue"),
+    },
+    {
+      path: "/project",
+      name: "project",
+      component: () => import("./views/UserProject.vue"),
+    },
+    {
+      path: "/skill",
+      name: "skill",
+      component: () => import("./views/UserSkill.vue"),
+    },
   ],
 });
 
