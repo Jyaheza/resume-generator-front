@@ -14,9 +14,9 @@ const router = createRouter({
       component: () => import("./views/CreateResume.vue"),
     },
     {
-      path: "/admin",
-      name: "admin",
-      component: () => import("./views/AdminHomepage.vue"),
+      path: "/reviewResume",
+      name: "reviewResume",
+      component: () => import("./views/ReviewResume.vue"),
     },
     {
       path: "/resumes",
@@ -28,6 +28,11 @@ const router = createRouter({
       name: "profile",
       component: () => import("./views/UserProfile.vue"),
     },
+    {
+      path: "/manageUsers",
+      name: "manageUsers",
+      component: () => import("./views/ManageUsers.vue"),
+    }
   ],
 });
 
