@@ -61,10 +61,10 @@ async function login() {
       window.localStorage.setItem("user", JSON.stringify(data.data));
       snackbar.value.value = true;
       snackbar.value.color = "green";
-      snackbar.value.text = "Login successful!"
-        router.push({ name: "resumes" });
-        isLoading.value = false;
-        router.push({ name: "resumes" });
+      snackbar.value.text = "Login successful!";
+      router.push({ name: user.value.role+"home" });
+      isLoading.value = false;
+      router.push({ name: user.value.role+"home" });
     })
     .catch((error) => {
       console.log(error);

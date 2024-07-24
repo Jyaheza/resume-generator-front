@@ -81,6 +81,30 @@ const isMenuVisible = (menuItem) => {
     </v-list-item>
 
     <v-divier></v-divier>
+    <v-navigation-drawer
+      expand-on-hover rail
+      v-model="drawer"
+      app
+      permanent
+
+      color="#000235"
+    >
+      <v-list-item nav v-if = 'user'>
+        <v-avatar color="accent" @click="router.push({ name: 'profile'})">
+                <span class="white--text text-h5">
+                  {{ `${user.firstName.charAt(0)}${user.lastName.charAt(0)}` }}
+                </span>
+              </v-avatar>
+          <template v-slot:append>
+            <v-btn
+              icon="mdi-chevron-left"
+              variant="text"
+              @click.stop="rail = !rail"
+            ></v-btn>
+          </template>
+      </v-list-item>
+       
+      <v-divider></v-divider>
 
       <v-list density="compact" nav>
         <v-list-item
