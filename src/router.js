@@ -28,6 +28,11 @@ const router = createRouter({
       name: "profile",
       component: () => import("./views/UserProfile.vue"),
     },
+    {
+      path: "/careerseviceshome",
+      name: "careerserviceshome",
+      component: () => import("./views/CareerServicesHomePage.vue"),
+    },
   ],
 });
 

@@ -77,7 +77,7 @@ const isMenuVisible = (menuItem) => {
           </template>
       </v-list-item>
        
-      <v-divier></v-divier>
+      <v-divider></v-divider>
 
       <v-list density="compact" nav>
         <v-list-item

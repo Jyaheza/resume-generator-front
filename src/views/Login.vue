@@ -17,12 +17,12 @@ const user = ref({
   lastName: "",
   email: "",
   password: "",
-  role: "Student" // Set user to student by default 
+  role: "careerservices"  //other options are "careerservices and admin"
 });
 
 onMounted(async () => {
   if (localStorage.getItem("user") !== null) {
-    router.push({ name: "resumes" });
+    router.push({ name: "resumes" }); // TODO: change this to appropriate landing page for signed in user's
   }
 });
 
@@ -34,7 +34,7 @@ async function createAccount() {
       snackbar.value.value = true;
       snackbar.value.color = "green";   
       snackbar.value.text = "Account created successfully!";
-      router.push({ name: "resumes" });
+      router.push({ name: "login" });
       user.value = {};
       isCreateAccount.value = false;
       isLoading.value = false;
@@ -62,9 +62,9 @@ async function login() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = "Login successful!";
-      router.push({ name: "resumes" });
+      router.push({ name: user.value.role+"home" });
       isLoading.value = false;
-       router.push({ name: "resumes" });
+      router.push({ name: user.value.role+"home" });
     })
     .catch((error) => {
       console.log(error);
