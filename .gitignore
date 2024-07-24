@@ -30,3 +30,6 @@ dist-ssr
 
 # Formatter
 .prettierrc
+
+# Screenshots from cypressio
+.cypress/screenshots/*
