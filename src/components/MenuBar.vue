@@ -105,7 +105,7 @@ const isMenuVisible = (menuItem) => {
           v-if="isMenuVisible('review')"
           prepend-icon="mdi-star"
           title="Review"
-          @click="router.push({ name: 'review' })"
+          @click="router.push({ name: 'reviewResume' })"
         ></v-list-item>
         <v-list-item
           v-if="isMenuVisible('home')"
@@ -146,30 +146,6 @@ const isMenuVisible = (menuItem) => {
   </v-app-bar>
 </template>
 
-<script>
-// Have the menu bar buttons switch between resumes 
-// and users functions here
-// Admin only
-function toggleToUsers() {
-  var users = document.getElementById('users');
-  var resumes = document.getElementById('resumes');
-  const hide = el => el.style.setProperty("display", "none");
-  const show = el => el.style.setProperty("display", "block");
-  hide(resumes);
-  show(users);
-}
-// Have the menu bar buttons switch between resumes 
-// and users functions here
-// Admin only
-function toggleToResumes() {
-  var users = document.getElementById('users');
-  var resumes = document.getElementById('resumes');
-  const hide = el => el.style.setProperty("display", "none");
-  const show = el => el.style.setProperty("display", "block");
-  hide(users);
-  show(resumes);
-}
-</script>
 
 <style scoped>
 /* Add any custom styles here */

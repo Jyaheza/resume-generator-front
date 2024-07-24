@@ -62,16 +62,9 @@ async function login() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = "Login successful!"
-      // Check to see if the role of the logged in user is an admin
-      // if so, direct them to admin page
-      if (data.data.role == 'admin') {
-        router.push({ name: "admin" });
-      }
-      else {
         router.push({ name: "resumes" });
         isLoading.value = false;
         router.push({ name: "resumes" });
-      }
     })
     .catch((error) => {
       console.log(error);
