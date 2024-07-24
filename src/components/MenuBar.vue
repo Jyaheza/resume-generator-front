@@ -60,7 +60,7 @@ const isMenuVisible = (menuItem) => {
     case 'career services':
       return menuItem !== 'manageUsers';
     case 'student':
-      return ['createResume', 'home', 'matchWithJob'].includes(menuItem);
+      return ['createResume','userCrud', 'home', 'matchWithJob'].includes(menuItem);
     default:
       return false;
   }
@@ -85,9 +85,15 @@ const isMenuVisible = (menuItem) => {
       <v-list density="compact" nav>
         <v-list-item
           v-if="isMenuVisible('createResume')"
-          prepend-icon="mdi-pencil"
+          prepend-icon="mdi-file-plus"
           title="Create Resume"
           @click="router.push({ name: 'createResume' })"
+        ></v-list-item>
+        <v-list-item
+          v-if="isMenuVisible('userCrud')"
+          prepend-icon="mdi-file-edit"
+          title="User Info"
+          @click="router.push({ name: 'userCrud' })"
         ></v-list-item>
         <v-list-item
           v-if="isMenuVisible('matchWithJob')"
