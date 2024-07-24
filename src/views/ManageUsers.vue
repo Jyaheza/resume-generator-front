@@ -42,6 +42,15 @@ async function getUsers() {
         })
 }
 
+async function deleteUser(item)
+{
+  if(confirm('Are you sure you want to delete ' + item.firstName + ' ' + item.lastName
+   + ' with ID: ' + item.id)) {
+    UserServices.deleteUser(item.id);
+  }
+  await getUsers();
+}
+
 async function editRole(selected, item) {
     // Set the selected user and their new role and update the database
     newInfo.value.firstName = item.firstName;
@@ -134,7 +143,7 @@ function closeEdit() {
                             <td>{{ item.email }}</td>
                             <td>
                                 <v-icon icon="mdi-pencil" size="small" variant="flat" @click="editUser(item)"></v-icon>
-                                <v-icon icon="mdi-delete" />
+                                <v-icon icon="mdi-delete" size="small" variant="flat" @click="deleteUser(item)" />
                             </td>
                         </tr>
                     </tbody>
