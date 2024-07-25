@@ -68,11 +68,6 @@ const router = createRouter({
       name: "manageUsers",
       component: () => import("./views/ManageUsers.vue"),
     },
-    {
-      path: "/careerseviceshome",
-      name: "careerserviceshome",
-      component: () => import("./views/CareerServicesHomePage.vue"),
-    },
   ],
 });
 
