@@ -17,6 +17,10 @@ export default {
     return await apiClient.post("users", user);
   },
 
+  deleteUser(userId) {
+    return apiClient.delete(`users/${userId}`);
+  },
+
   async loginUser(user) {
     return await apiClient.post("login", user.value, {
       headers: {
