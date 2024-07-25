@@ -62,9 +62,15 @@ async function login() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = "Login successful!";
-      router.push({ name: user.value.role+"home" });
+
+      /*
+      TODO: resume default redirect to resumes 
+      after we create appropriate homepages for every user 
+      */
+
+      router.push({ name: "resumes" /*(user.value.role+"home") */});
       isLoading.value = false;
-      router.push({ name: user.value.role+"home" });
+      router.push({ name:  "resumes" /*(user.value.role+"home") */ });
     })
     .catch((error) => {
       console.log(error);
