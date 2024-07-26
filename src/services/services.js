@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios from "axios"; 
+import router from '../router';
 
 var baseurl = "";
 if (process.env.NODE_ENV === "development") {
@@ -28,13 +29,24 @@ const apiClient = axios.create({
     }
     return JSON.stringify(data);
   },
-  transformResponse: function (data) {
-    data = JSON.parse(data);
-    if (!data.success && data.code == "expired-session") {
-      localStorage.removeItem("user");
-    }
-    return data;
-  },
+  // transformResponse: function (data) {
+  //   data = JSON.parse(data);
+  //   if (!data.success && data.code == "expired-session") {
+  //     localStorage.removeItem("user");
+  //   }
+  //   return data;
+  // },
 });
+
+apiClient.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("user");
+      router.push({ name: 'login' });
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default apiClient;
