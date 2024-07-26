@@ -60,7 +60,7 @@ const isMenuVisible = (menuItem) => {
     case 'career services':
       return menuItem !== 'manageUsers';
     case 'student':
-      return ['createResume','userCrud', 'home', 'matchWithJob'].includes(menuItem);
+      return ['createResume', 'userCrud', 'home', 'matchWithJob'].includes(menuItem);
     default:
       return false;
   }
@@ -82,66 +82,35 @@ const isMenuVisible = (menuItem) => {
 
     <v-divier></v-divier>
 
-      <v-list density="compact" nav>
-        <v-list-item
-          v-if="isMenuVisible('createResume')"
-          prepend-icon="mdi-file-plus"
-          title="Create Resume"
-          @click="router.push({ name: 'createResume' })"
-        ></v-list-item>
-        <v-list-item
-          v-if="isMenuVisible('userCrud')"
-          prepend-icon="mdi-file-edit"
-          title="User Info"
-          @click="router.push({ name: 'userCrud' })"
-        ></v-list-item>
-        <v-list-item
-          v-if="isMenuVisible('matchWithJob')"
-          prepend-icon="mdi-briefcase-search"
-          title="Match With Job"
-          @click="router.push({ name: 'matchWithJob' })"
-        ></v-list-item>
-        <v-list-item
-          v-if="isMenuVisible('review')"
-          prepend-icon="mdi-star"
-          title="Review"
-          @click="router.push({ name: 'reviewResume' })"
-        ></v-list-item>
-        <v-list-item
-          v-if="isMenuVisible('home')"
-          prepend-icon="mdi-home"
-          title="Home"
-          @click="router.push({ name: 'resumes' })"
-        ></v-list-item>
-        <v-list-item
-          v-if="isMenuVisible('manageUsers')"
-          prepend-icon="mdi-account-multiple"
-          title="Manage Users"
-          @click="router.push({ name: 'manageUsers' })"
-        ></v-list-item>
-        <v-list-item
-          v-if="user"
-          prepend-icon="mdi-logout"
-          title="Logout"
-          @click="logout()"
-        ></v-list-item>
-        <v-list-item
-          v-if="!user"
-          prepend-icon="mdi-login"
-          title="Login"
-          @click="router.push({ name: 'login' })"
-        ></v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+    <v-list density="compact" nav>
+      <v-list-item v-if="isMenuVisible('createResume')" prepend-icon="mdi-file-plus" title="Create Resume"
+        @click="router.push({ name: 'createResume' })"></v-list-item>
+      <v-list-item v-if="isMenuVisible('userCrud')" prepend-icon="mdi-file-edit" title="User Info"
+        @click="router.push({ name: 'userCrud' })"></v-list-item>
+      <v-list-item v-if="isMenuVisible('review')" prepend-icon="mdi-star" title="Review"
+        @click="router.push({ name: 'reviewResume' })"></v-list-item>
+      <v-list-item v-if="isMenuVisible('home')" prepend-icon="mdi-home" title="Home"
+        @click="router.push({ name: 'resumes' })"></v-list-item>
+      <v-list-item v-if="isMenuVisible('manageUsers')" prepend-icon="mdi-account-multiple" title="Manage Users"
+        @click="router.push({ name: 'manageUsers' })"></v-list-item>
+      <v-list-item v-if="user" prepend-icon="mdi-logout" title="Logout" @click="logout()"></v-list-item>
+      <v-list-item v-if="!user" prepend-icon="mdi-login" title="Login"
+        @click="router.push({ name: 'login' })"></v-list-item>
+    </v-list>
+  </v-navigation-drawer>
 
   <v-app-bar app color="#000235" dark>
-    <v-img @click="router.push({ name: 'resumes' })" style="cursor: pointer;" class="mx-2"
-      :src="'https://c.animaapp.com/xe30pEHc/img/object-other-12.png'" height="50" width="50" contain></v-img>
-    <!-- </router-link> -->
-
-    <v-toolbar-title class="title">
-      {{ title }}
-    </v-toolbar-title>
+    <v-row>
+      <v-col cols="3">
+        <v-img @click="router.push({ name: 'resumes' })" style="cursor: pointer;" class="mx-2"
+          :src="'https://c.animaapp.com/xe30pEHc/img/object-other-12.png'" height="50" width="50" contain></v-img>
+      </v-col>
+      <v-col cols="9" class="d-flex justify-center align-center">
+        <v-toolbar-title class="title">
+          {{ title }}
+        </v-toolbar-title>
+      </v-col>
+    </v-row>
     <v-spacer></v-spacer>
   </v-app-bar>
 </template>

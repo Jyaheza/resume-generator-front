@@ -255,7 +255,7 @@ function mapNewResumeData(resumeData, jobExperienceData, educationData, certific
     // Set remaining fields
     newResume.value.templateId = 1;
     newResume.value.userId = userId;
-    newResume.value.title = ""; 
+    newResume.value.title = "";
 }
 
 function toggleSection(section) {
@@ -315,7 +315,7 @@ function closeSnackBar() {
     snackbar.value.value = false;
 }
 
-function divToggle(){
+function divToggle() {
     alert('Not yet implemented');
 }
 
@@ -331,6 +331,7 @@ v-card-title:hover {
 }
 
 .fixed-footer {
+    background-color: rgba(197, 202, 233, 0.9);
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -339,6 +340,7 @@ v-card-title:hover {
     /* Center horizontally */
     align-items: center;
     /* Center vertically */
+
 }
 
 .thumbnail-image {
@@ -347,6 +349,10 @@ v-card-title:hover {
 
 .thumbnail-image:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+:deep(.v-btn__content) {
+    white-space: pre-wrap;
 }
 
 @media (min-width: 600px) {
@@ -360,7 +366,7 @@ v-card-title:hover {
 </style>
 
 <template>
-    <v-container>
+    <v-container v-if="resumeData">
         <div id="body">
             <v-dialog v-model="dialog" max-width="600px">
                 <v-card>
@@ -377,26 +383,26 @@ v-card-title:hover {
             </v-overlay>
 
             <v-row class="mb-4">
-                <v-col cols="12">
-                    <v-card-title class="pl-0 text-h4 font-weight-bold">Create a resume</v-card-title>
+                <v-col cols="12 d-flex justify-center justify-sm-start">
+                    <span class="pl-0 text-h4 font-weight-bold">Create a resume</span>
                 </v-col>
             </v-row>
 
             <!-- Templates -->
             <v-row>
-                <v-col cols="12">
-                    <v-card-title class="pl-0 text-h6 font-weight-bold">
-                        <v-icon v-if="!showTemplates" @click="toggleSection('templates')">
-                            mdi-plus-circle-outline</v-icon>
-                        <v-icon v-if="showTemplates" @click="toggleSection('templates')">
-                            mdi-minus-circle-outline</v-icon>
-                        Choose a template
-                    </v-card-title>
+                <v-col cols="12" class="cursor-pointer d-flex justify-center justify-sm-start align-center"
+                    @click="toggleSection('templates')">
+                    <v-icon v-if="!showTemplates">
+                        mdi-plus-circle-outline</v-icon>
+                    <v-icon v-if="showTemplates" @click="toggleSection('templates')">
+                        mdi-minus-circle-outline</v-icon>
+                    <span class="pl-0 text-h6 font-weight-bold">Choose a template</span>
                 </v-col>
                 <template v-if="showTemplates">
                     <v-col v-for="(template, index) in templates" :key="index" cols="6" lg="4" xl="3">
-                        <v-row style="cursor: pointer;">
-                            <v-col cols="12" sm="4" md="3" lg="3" @click="handleThumbnailClick(template.id)">
+                        <v-row class="d-flex justify-center justify-sm-start" style="cursor: pointer;">
+                            <v-col class="mr-6" cols="12" sm="4" md="3" lg="3"
+                                @click="handleThumbnailClick(template.id)">
                                 <!-- Thumbnail Image -->
                                 <img :src="`./template-thumbnails/template${index + 1}-thumbnail.png`"
                                     alt="Template Thumbnail" style="max-width: 150px; max-height: 150px;"
@@ -415,318 +421,319 @@ v-card-title:hover {
                 <v-divider class="mt-8 mb-13"></v-divider>
             </v-row>
 
-
             <!-- Title -->
             <v-row>
-                <v-col cols="12">
-                    <v-card justify="center" variant="flat">
-                        <v-card-title class="pl-0 text-h6 font-weight-bold">Resume Title</v-card-title>
-                        <v-row>
-                            <v-col class="p-0" cols="12" sm="6" lg="4">
-                                <v-text-field v-model="resumeTitle" label="Reume Title"
-                                    placeholder="Enter a resume title"></v-text-field>
-                            </v-col>
-                        </v-row>
-                    </v-card>
+                <v-col cols="12" class="d-flex justify-center justify-sm-start">
+                    <span class="pl-0 text-h6 font-weight-bold">Resume Title</span>
+                </v-col>
+                <v-col class="p-0" cols="14" sm="6" md="4">
+                    <v-text-field v-model="resumeTitle" label="Reume Title"
+                        placeholder="Enter a resume title"></v-text-field>
                 </v-col>
                 <v-divider class="mt-8 mb-13"></v-divider>
             </v-row>
 
-
             <!-- Personal Information Section -->
             <v-row>
-                <v-col cols="12">
-                    <v-card justify="center" variant="flat">
-                        <v-card-title class="pl-0 text-h6 font-weight-bold">Personal Information</v-card-title>
-                        <template v-if="resumeData">
-                            <v-row>
-                                <v-col class="p-0" cols="12" sm="6" lg="4">
-                                    <v-text-field v-model="resumeData.full_name" label="Full Name"
-                                        placeholder="Enter your full name"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" lg="4">
-                                    <v-text-field v-model="resumeData.user_email" label="Email Address"
-                                        placeholder="Enter your email address"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" lg="4">
-                                    <v-text-field v-model="resumeData.user_phone_number" label="Phone Number"
-                                        placeholder="Enter your phone number"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" lg="4">
-                                    <v-text-field v-model="resumeData.website_url" label="Website URL"
-                                        placeholder="Enter your website URL"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" lg="4">
-                                    <v-text-field v-model="resumeData.location" label="Location"
-                                        placeholder="Enter your location"></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-textarea v-model="resumeData.summary" label="Summary"
-                                        placeholder="Enter a summary"></v-textarea>
-                                </v-col>
-                            </v-row>
-                        </template>
-                    </v-card>
+                <v-col cols="12" class="d-flex justify-center justify-sm-start">
+                    <span class="pl-0 text-h6 font-weight-bold">Personal Information</span>
+                </v-col>
+                <v-col cols="12" sm="8" lg="4">
+                    <template v-if="resumeData">
+                        <v-text-field v-model="resumeData.full_name" label="Full Name"
+                            placeholder="Enter your full name"></v-text-field>
+                        <v-text-field v-model="resumeData.user_email" label="Email Address"
+                            placeholder="Enter your email address"></v-text-field>
+                        <v-text-field v-model="resumeData.user_phone_number" label="Phone Number"
+                            placeholder="Enter your phone number"></v-text-field>
+                        <v-text-field v-model="resumeData.website_url" label="Website URL"
+                            placeholder="Enter your website URL"></v-text-field>
+                        <v-text-field v-model="resumeData.location" label="Location"
+                            placeholder="Enter your location"></v-text-field>
+                        <v-textarea v-model="resumeData.summary" label="Summary"
+                            placeholder="Enter a summary"></v-textarea>
+                    </template>
                 </v-col>
             </v-row>
 
             <!-- Job Experience Section -->
             <v-row>
-                <v-col cols="12">
-                    <v-card justify="center" variant="flat">
-                        <v-card-title class="pl-0 text-h6 font-weight-bold">
-                            <v-icon v-if="!showJobExperience" @click="toggleSection('jobExperience')">
-                                mdi-plus-circle-outline</v-icon>
-                            <v-icon v-if="showJobExperience" @click="toggleSection('jobExperience')">
-                                mdi-minus-circle-outline</v-icon>
-                            Job Experience
-                        </v-card-title>
-                        <template v-if="jobExperienceData && jobExperienceData.length > 0">
-                            <template v-if="showJobExperience">
-                                <template v-for="experience in jobExperienceData" :key="experience.id">
-                                    <v-form>
-                                        <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
-                                            <v-col cols="12">
-                                                <v-btn @click="divToggle()"
-                                                    color="#FF0000">Remove
-                                                    from this resume</v-btn>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="experience.employer"
-                                                    label="Employer"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="experience.job_title"
-                                                    label="Job Title"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="experience.city" label="City"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="3" md="2">
-                                                <v-text-field v-model="experience.state" label="State"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="4" md="4">
-                                                <v-text-field v-model="experience.start_year"
-                                                    label="Start Year (MM/YYYY)"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="4" md="4">
-                                                <v-text-field v-model="experience.end_year"
-                                                    label="End Year (MM/YYYY)"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-textarea v-model="experience.summary" label="Summary"></v-textarea>
-                                            </v-col>
-                                        </v-row>
-                                    </v-form>
-                                    <v-divider class="mt-8 mb-13"></v-divider>
-                                </template>
+                <v-col cols="12" class="d-flex justify-center justify-sm-start align-center">
+                    <v-icon v-if="!showJobExperience" @click="toggleSection('jobExperience')">
+                        mdi-plus-circle-outline</v-icon>
+                    <v-icon v-if="showJobExperience" @click="toggleSection('jobExperience')">
+                        mdi-minus-circle-outline</v-icon>
+                    <span class="pl-0 text-h6 font-weight-bold">Job Experience</span>
+                </v-col>
+                <v-col>
+                    <template v-if="jobExperienceData && jobExperienceData.length > 0">
+                        <template v-if="showJobExperience">
+                            <template v-for="experience in jobExperienceData" :key="experience.id">
+                                <v-form>
+                                    <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
+                                        <v-col cols="12">
+                                            <v-btn @click="divToggle()" color="#FF0000">Remove
+                                                from this resume</v-btn>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="experience.employer" label="Employer"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="experience.job_title"
+                                                label="Job Title"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="experience.city" label="City"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="3" md="2">
+                                            <v-text-field v-model="experience.state" label="State"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="4" md="4">
+                                            <v-text-field v-model="experience.start_year"
+                                                label="Start Year (MM/YYYY)"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="4" md="4">
+                                            <v-text-field v-model="experience.end_year"
+                                                label="End Year (MM/YYYY)"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-textarea v-model="experience.summary" label="Summary"></v-textarea>
+                                        </v-col>
+                                    </v-row>
+                                </v-form>
+                                <v-divider class="mt-8 mb-13"></v-divider>
                             </template>
                         </template>
-                        <v-btn @click="divToggle('add_job', 'submit_job', 'job_table', 'fill_job')" id="add_job"
-                            color="#000235">Add
-                            new job</v-btn>
-                    </v-card>
+                    </template>
+                    <v-row>
+                        <v-col class="d-flex justify-center justify-sm-start">
+                            <v-btn @click="divToggle('add_job', 'submit_job', 'job_table', 'fill_job')" id="add_job"
+                                color="#000235">Add
+                                new job</v-btn>
+                        </v-col>
+                    </v-row>
                 </v-col>
             </v-row>
 
             <!-- Education Section -->
             <v-row>
-                <v-col cols="12">
-                    <v-card justify="center" variant="flat">
-                        <v-card-title class="pl-0 text-h6 font-weight-bold">
-                            <v-icon v-if="!showEducation" @click="toggleSection('education')">
-                                mdi-plus-circle-outline</v-icon>
-                            <v-icon v-if="showEducation" @click="toggleSection('education')">
-                                mdi-minus-circle-outline</v-icon>
-                            Education
-                        </v-card-title>
-                        <template v-if="educationData && educationData.length > 0">
-                            <template v-if="showEducation">
-                                <template v-for="education in educationData" :key="education.id">
-                                    <v-form>
-                                        <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
-                                            <v-col cols="12">
-                                                <v-btn @click="divToggle()" color="#FF0000">Remove
-                                                    from
-                                                    this resume</v-btn>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="education.education_name"
-                                                    label="Education Name"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="education.location"
-                                                    label="Location"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="education.start_year"
-                                                    label="Start Year (MM/YYYY)"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="education.end_year"
-                                                    label="End Year (MM/YYYY)"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="education.degree_name"
-                                                    label="Degree Name"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="education.gpa" label="GPA"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-textarea v-model="education.awards" label="Awards"></v-textarea>
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-textarea v-model="education.coursework"
-                                                    label="Coursework"></v-textarea>
-                                            </v-col>
-                                        </v-row>
-                                    </v-form>
-                                    <v-divider class="mt-8 mb-13"></v-divider>
-                                </template>
+                <v-col cols="12" class="d-flex justify-center justify-sm-start align-center">
+                    <v-icon v-if="!showEducation" @click="toggleSection('education')">
+                        mdi-plus-circle-outline</v-icon>
+                    <v-icon v-if="showEducation" @click="toggleSection('education')">
+                        mdi-minus-circle-outline</v-icon>
+                    <span class="pl-0 text-h6 font-weight-bold">Education</span>
+                </v-col>
+                <v-col>
+                    <template v-if="educationData && educationData.length > 0">
+                        <template v-if="showEducation">
+                            <template v-for="education in educationData" :key="education.id">
+                                <v-form>
+                                    <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
+                                        <v-col cols="12">
+                                            <v-btn @click="divToggle()" color="#FF0000">Remove
+                                                from
+                                                this resume</v-btn>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="education.education_name"
+                                                label="Education Name"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="education.location" label="Location"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="education.start_year"
+                                                label="Start Year (MM/YYYY)"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="education.end_year"
+                                                label="End Year (MM/YYYY)"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="education.degree_name"
+                                                label="Degree Name"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="education.gpa" label="GPA"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-textarea v-model="education.awards" label="Awards"></v-textarea>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-textarea v-model="education.coursework" label="Coursework"></v-textarea>
+                                        </v-col>
+                                    </v-row>
+                                </v-form>
+                                <v-divider class="mt-8 mb-13"></v-divider>
                             </template>
                         </template>
-                        <v-btn
-                            @click="divToggle('add_education', 'submit_education', 'education_table', 'fill_education')"
-                            id="add_education" color="#000235">Add new education</v-btn>
-                    </v-card>
+                    </template>
+                    <v-row>
+                        <v-col class="d-flex justify-center justify-sm-start">
+                            <v-btn
+                                @click="divToggle('add_education', 'submit_education', 'education_table', 'fill_education')"
+                                id="add_education" color="#000235">Add new education</v-btn>
+                        </v-col>
+                    </v-row>
                 </v-col>
             </v-row>
 
             <!-- Projects Section -->
             <v-row>
-                <v-col cols="12">
-                    <v-card justify="center" variant="flat">
-                        <v-card-title class="pl-0 text-h6 font-weight-bold">
-                            <v-icon v-if="!showProjects" @click="toggleSection('projects')">
-                                mdi-plus-circle-outline</v-icon>
-                            <v-icon v-if="showProjects" @click="toggleSection('projects')">
-                                mdi-minus-circle-outline</v-icon>
-                            Projects</v-card-title>
-                        <template v-if="projectsData && projectsData.length > 0">
-                            <template v-if="showProjects">
-                                <template v-for="project in projectsData" :key="project.id">
-                                    <v-form>
-                                        <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
-                                            <v-col cols="12">
-                                                <v-btn @click="divToggle()" color="#FF0000">Remove from
-                                                    this
-                                                    resume</v-btn>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="project.project_title"
-                                                    label="Project Title"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="project.location"
-                                                    label="Location"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="project.start_year"
-                                                    label="Start Year (MM/YYYY)"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="project.end_year"
-                                                    label="End Year (MM/YYYY)"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-textarea v-model="project.summary" label="Summary"></v-textarea>
-                                            </v-col>
-                                        </v-row>
-                                    </v-form>
-                                    <v-divider class="mt-8 mb-13"></v-divider>
-                                </template>
+                <v-col cols="12" class="d-flex justify-center justify-sm-start align-center">
+                    <v-icon v-if="!showProjects" @click="toggleSection('projects')">
+                        mdi-plus-circle-outline</v-icon>
+                    <v-icon v-if="showProjects" @click="toggleSection('projects')">
+                        mdi-minus-circle-outline</v-icon>
+                    <span class="pl-0 text-h6 font-weight-bold">Projects</span>
+                </v-col>
+                <v-col>
+                    <template v-if="projectsData && projectsData.length > 0">
+                        <template v-if="showProjects">
+                            <template v-for="project in projectsData" :key="project.id">
+                                <v-form>
+                                    <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
+                                        <v-col cols="12">
+                                            <v-btn @click="divToggle()" color="#FF0000">Remove from
+                                                this
+                                                resume</v-btn>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="project.project_title"
+                                                label="Project Title"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="project.location" label="Location"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="project.start_year"
+                                                label="Start Year (MM/YYYY)"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="project.end_year"
+                                                label="End Year (MM/YYYY)"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-textarea v-model="project.summary" label="Summary"></v-textarea>
+                                        </v-col>
+                                    </v-row>
+                                </v-form>
+                                <v-divider class="mt-8 mb-13"></v-divider>
                             </template>
                         </template>
-                        <v-btn @click="divToggle('add_project', 'submit_project', 'project_table', 'fill_project')"
-                            id="add_project" color="#000235">Add new project</v-btn>
-                    </v-card>
+                    </template>
+                    <v-row>
+                        <v-col class="d-flex justify-center justify-sm-start">
+                            <v-btn @click="divToggle('add_project', 'submit_project', 'project_table', 'fill_project')"
+                                id="add_project" color="#000235">Add new project</v-btn>
+                        </v-col>
+                    </v-row>
                 </v-col>
             </v-row>
 
             <!-- Certificates Section -->
             <v-row>
-                <v-col cols="12">
-                    <v-card justify="center" variant="flat">
-                        <v-card-title class="pl-0 text-h6 font-weight-bold">
-                            <v-icon v-if="!showCertificates" @click="toggleSection('certificates')">
-                                mdi-plus-circle-outline</v-icon>
-                            <v-icon v-if="showCertificates" @click="toggleSection('certificates')">
-                                mdi-minus-circle-outline</v-icon>
-                            Certificates</v-card-title>
-                        <template v-if="certificatesData && certificatesData.length > 0">
-                            <template v-if="showCertificates">
-                                <template v-for="certificate in certificatesData" :key="certificate.id">
-                                    <v-form>
-                                        <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
-                                            <v-col cols="12">
-                                                <v-btn @click="divToggle()" color="#FF0000">Remove
-                                                    from this resume</v-btn>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="certificate.certificate_title"
-                                                    label="Certificate Title"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="certificate.issuer"
-                                                    label="Issuer"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="4" md="4">
-                                                <v-text-field v-model="certificate.issue_date"
-                                                    label="Issue Date (MM/YYYY)"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="4" md="4">
-                                                <v-text-field v-model="certificate.expire_date"
-                                                    label="Expiration Date (MM/YYYY)"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-textarea v-model="certificate.summary" label="Summary"></v-textarea>
-                                            </v-col>
-                                        </v-row>
-                                    </v-form>
-                                    <v-divider class="mt-8 mb-13"></v-divider>
-                                </template>
+                <v-col cols="12" class="d-flex justify-center justify-sm-start align-center">
+                    <v-icon v-if="!showCertificates" @click="toggleSection('certificates')">
+                        mdi-plus-circle-outline</v-icon>
+                    <v-icon v-if="showCertificates" @click="toggleSection('certificates')">
+                        mdi-minus-circle-outline</v-icon>
+                    <span class="pl-0 text-h6 font-weight-bold">Certificates</span>
+                </v-col>
+                <v-col>
+                    <template v-if="certificatesData && certificatesData.length > 0">
+                        <template v-if="showCertificates">
+                            <template v-for="certificate in certificatesData" :key="certificate.id">
+                                <v-form>
+                                    <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
+                                        <v-col cols="12">
+                                            <v-btn @click="divToggle()" color="#FF0000">Remove
+                                                from this resume</v-btn>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="certificate.certificate_title"
+                                                label="Certificate Title"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-text-field v-model="certificate.issuer" label="Issuer"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="4" md="4">
+                                            <v-text-field v-model="certificate.issue_date"
+                                                label="Issue Date (MM/YYYY)"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="4" md="4">
+                                            <v-text-field v-model="certificate.expire_date"
+                                                label="Expiration Date (MM/YYYY)"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-textarea v-model="certificate.summary" label="Summary"></v-textarea>
+                                        </v-col>
+                                    </v-row>
+                                </v-form>
+                                <v-divider class="mt-8 mb-13"></v-divider>
                             </template>
                         </template>
-                        <v-btn
-                            @click="divToggle('add_certificate', 'submit_certificate', 'certificates_table', 'fill_certificate')"
-                            id="add_certificate" color="#000235">Add new certificate</v-btn>
-                    </v-card>
+                    </template>
+                    <v-row>
+                        <v-col class="d-flex justify-center justify-sm-start">
+                            <v-btn
+                                @click="divToggle('add_certificate', 'submit_certificate', 'certificates_table', 'fill_certificate')"
+                                id="add_certificate" color="#000235">Add new certificate</v-btn>
+                        </v-col>
+                    </v-row>
                 </v-col>
             </v-row>
 
             <!-- Skills Section -->
-            <v-row>
-                <v-col cols="12">
-                    <v-card justify="center" variant="flat" class="mb-15">
-                        <v-card-title class="pl-0 text-h6 font-weight-bold">
-                            <v-icon v-if="!showSkills" @click="toggleSection('skills')">
-                                mdi-plus-circle-outline</v-icon>
-                            <v-icon v-if="showSkills" @click="toggleSection('skills')">
-                                mdi-minus-circle-outline</v-icon>
-                            Skills</v-card-title>
-                        <template v-if="showSkills">
-                            <v-row>
-                                <template v-for="(skill, index) in skillsData" :key="index">
-                                    <v-col cols="12" sm="6" md="4" lg="3">
-                                        <v-text-field v-model="skill.name" label="Skill"></v-text-field>
-                                    </v-col>
-                                </template>
-                            </v-row>
-                        </template>
-                        <v-btn @click="divToggle()" color="#000235">Add Skill</v-btn>
-                    </v-card>
+            <v-row class="mb-15">
+                <v-col cols="12" class="d-flex justify-center justify-sm-start align-center">
+                    <v-icon v-if="!showSkills" @click="toggleSection('skills')">
+                        mdi-plus-circle-outline</v-icon>
+                    <v-icon v-if="showSkills" @click="toggleSection('skills')">
+                        mdi-minus-circle-outline</v-icon>
+                    <span class="pl-0 text-h6 font-weight-bold">Skills</span>
+                </v-col>
+                <v-col>
+                    <template v-if="showSkills">
+                        <v-row>
+                            <template v-for="(skill, index) in skillsData" :key="index">
+                                <v-col cols="12" sm="6" md="4" lg="3">
+                                    <v-text-field v-model="skill.name" label="Skill"></v-text-field>
+                                </v-col>
+                            </template>
+                        </v-row>
+                    </template>
+                    <v-row>
+                        <v-col class="d-flex justify-center justify-sm-start">
+                            <v-btn @click="divToggle()" color="#000235">Add Skill</v-btn>
+                        </v-col>
+                    </v-row>
                 </v-col>
             </v-row>
         </div>
     </v-container>
-    <v-row>
+    <v-footer v-if="resumeData" class="fixed-footer pt-3 pb-3" elevation="24">
+        <v-row>
+            <v-col col="12" class="d-flex justify-center justify-sm-end align-center">
+                <v-btn rounded="xl" size="large" color="primary" @click="generateResume();">Generate
+                    Resume</v-btn>
+            </v-col>
+            <v-col col="12" class="d-flex align-center">
+                <v-btn rounded="xl" size="small" color="error" @click="router.push('resumes')">Cancel</v-btn>
+            </v-col>
+        </v-row>
+    </v-footer>
+    <v-container v-if="!resumeData">
         <v-col col="12">
-            <v-footer col="12" class="fixed-footer pt-4 pb-4" elevation="24">
-                <v-btn rounded="xl" size="x-large" color="primary" @click="generateResume();">Generate Resume</v-btn>
-            </v-footer>
+            <p class="pl-0 text-h6 font-weight-bold d-flex text-center text-sm-start">You are missing professional
+                resume
+                information. You need to add some details about yourself before you can generate a resume</p>
         </v-col>
-    </v-row>
+        <v-col col="12" class="d-flex justify-center justify-sm-start align-center">
+            <v-btn rounded="xl" size="large" color="primary" @click="router.push('userCrud')">Manage Profile</v-btn>
+        </v-col>
+    </v-container>
     <v-snackbar v-model="snackbar.value" rounded="pill" location="center">
         {{ snackbar.text }}
         <template v-slot:actions>
