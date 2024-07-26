@@ -1,7 +1,8 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { useRouter } from "vue-router";
 import ResumeServices from "../services/ResumeServices";
+import JobMatchServices from "../services/JobMatchServices";
 import VueSpeedometer from "vue-speedometer"
 
 const router = useRouter();
@@ -12,27 +13,32 @@ user.value = JSON.parse(localStorage.getItem("user"));
 const segmentColorsOn = ["firebrick", "tomato", "gold", "yellowgreen", "limegreen"];
 const segmentColorsOff = ["ghostwhite", "lightgrey", "grey", "darkgrey", "black"];
 
-const jobMatchValue = ref(null);
-const jobMatchList = ref([]);
-const expandedPanels = ref(undefined);
-const jobMatchExpanded = ref(false);
+const jobMatchScore = ref({});
+const jobMatchCritique = ref({});
+const expandedPanels = ref([]);
 const showDeleteDialog = ref(false);
 const resumeToDelete = ref(null);
 const loading = ref(false);
-const jobMatchTextColor = ref(segmentColorsOn[jobMatchValue.value] || "limegreen");
+const jobMatchTextColor = ref({})
 const snackbar = ref({
   value: false,
   color: "",
   text: "",
 });
+const jobDescriptions = ref({});
 
 onMounted(async () => {
+  loading.value = true;
   if (user.value) {
     try {
-      setResumeData();
+      await setResumeData();
+      await loadJobMatchValues();
+      await loadJobDescriptions();
+      loading.value = false;
     } catch (error) {
       console.error("Error fetching data:", error);
       resumesData.value = [];
+      loading.value = false;
     }
   }
 });
@@ -41,6 +47,15 @@ async function setResumeData() {
   const resumeResponse = await ResumeServices.getResumesMeta(user.value.id);
   const resumesResponseData = resumeResponse.data;
   resumesData.value = resumesResponseData.length > 0 ? resumesResponseData : [];
+}
+
+async function loadJobDescriptions() {
+  const existingJobDescriptions = localStorage.getItem('jobDescriptions');
+  const existingJobDescriptionsJson = existingJobDescriptions ? JSON.parse(existingJobDescriptions) : {};
+
+  Object.entries(existingJobDescriptionsJson).forEach(([key, value]) => {
+    jobDescriptions.value[key] = value;
+  });
 }
 
 async function openResumePdf(resumeId) {
@@ -67,15 +82,17 @@ async function openResumePdf(resumeId) {
     // Open PDF in a new tab
     window.open(blobUrl, '_blank');
 
-    URL.revokeObjectURL(blobUrl);
-
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 2000);
+  } catch (error) {
+    console.error('Error opening PDF:', error);
+  } finally {
     pdfResponse = null;
     uint8Array = null;
     b64String = null;
     blob = null;
     blobUrl = null;
-  } catch (error) {
-    console.error('Error opening PDF:', error);
   }
 }
 
@@ -98,14 +115,6 @@ function b64toBlob(base64Data, contentType = '', sliceSize = 512) {
   const blob = new Blob(byteArrays, { type: contentType });
   return blob;
 }
-
-watch(expandedPanels, (newVal) => {
-  if (newVal === 0) {
-    jobMatchExpanded.value = true;
-  } else {
-    jobMatchExpanded.value = false;
-  }
-});
 
 function deleteResumePrompt(resumeId) {
   showDeleteDialog.value = true;
@@ -139,7 +148,76 @@ function closeSnackBar() {
   snackbar.value.value = false;
 }
 
+async function getJobMatch(resumeId, jobDescription) {
+  loading.value = true;
+  let jobMatchResult;
+  try {
+    jobMatchResult = await JobMatchServices.getJobMatch(resumeId, jobDescription);
+  } catch (error) {
+    console.log(error);
+    loading.value = false;
+  }
+
+  const existingJobDescriptions = localStorage.getItem('jobDescriptions');
+  const existingJobDescriptionsJson = existingJobDescriptions ? JSON.parse(existingJobDescriptions) : {};
+  existingJobDescriptionsJson[resumeId] = jobDescription;
+  localStorage.setItem('jobDescriptions', JSON.stringify(existingJobDescriptionsJson));
+
+  jobMatchScore.value[resumeId] = jobMatchResult.data.score;
+  jobMatchCritique.value[resumeId] = jobMatchResult.data.critique;
+  jobMatchTextColor.value[resumeId] = segmentColorsOn[Math.floor(jobMatchResult.data.score)] || "limegreen";
+
+  await saveJobMatchResult(jobMatchResult, resumeId, jobDescription);
+
+  loading.value = false;
+}
+
+async function saveJobMatchResult(jobMatchResult, resumeId, jobDescription) {
+  const existingResults = localStorage.getItem('jobMatchResults');
+  const existingResultsJson = existingResults ? JSON.parse(existingResults) : {};
+
+  if (!existingResultsJson[resumeId]) {
+    existingResultsJson[resumeId] = {};
+  }
+
+  existingResultsJson[resumeId].score = jobMatchResult.data.score;
+  existingResultsJson[resumeId].critique = jobMatchResult.data.critique;
+  existingResultsJson[resumeId].jobDescription = jobDescription;
+
+  localStorage.setItem('jobMatchResults', JSON.stringify(existingResultsJson));
+}
+
+async function loadJobMatchValues() {
+  const existingResults = localStorage.getItem('jobMatchResults');
+  const existingResultsJson = existingResults ? JSON.parse(existingResults) : {};
+  Object.entries(existingResultsJson).forEach(([key, value]) => {
+    const score = value.score;
+    const critique = value.critique;
+    jobMatchScore.value[key] = score;
+    jobMatchCritique.value[key] = critique;
+    jobMatchTextColor.value[key] = segmentColorsOn[Math.floor(score)] || "limegreen";
+  });
+}
+
+function getSegmentColors(resumeId) {
+  const score = Math.floor(jobMatchScore.value[resumeId] || 0);
+  const colors = !score ? segmentColorsOff : segmentColorsOn;
+  return colors;
+};
+
 </script>
+
+<style scoped>
+:deep(.v-btn__content) {
+  white-space: pre-wrap;
+}
+
+.delete-icon {
+  position: absolute;
+  bottom: 16px;
+  right: 22px;
+}
+</style>
 
 <template>
   <v-dialog v-model="showDeleteDialog" max-width="500px">
@@ -155,52 +233,25 @@ function closeSnackBar() {
       </v-card-actions>
     </v-card>
   </v-dialog>
-  <v-overlay :model-value="loading" contained persistent class="align-center justify-center">
-    <v-progress-circular :size="70" :width="7" color="primary" indeterminate></v-progress-circular>
-  </v-overlay>
+
   <v-snackbar v-model="snackbar.value" rounded="pill" location="center">
     {{ snackbar.text }}
     <template v-slot:actions>
-      <v-btn :color="snackbar.color" text @click="closeSnackBar">
-        Close
-      </v-btn>
+      <v-btn :color="snackbar.color" text @click="closeSnackBar">Close</v-btn>
     </template>
   </v-snackbar>
+
   <v-container>
     <div id="body">
+      <v-overlay :model-value="loading" contained persistent class="align-center justify-center">
+        <v-progress-circular :size="70" :width="7" color="primary" indeterminate></v-progress-circular>
+      </v-overlay>
       <v-row>
         <v-col cols="12">
           <v-container>
             <v-row>
               <v-col cols="12" sm="6">
                 <div class="text-h5">My Resumes:</div>
-              </v-col>
-              <v-col v-if="resumesData && resumesData.length > 0" cols="12" sm="6">
-                <v-expansion-panels v-model="expandedPanels">
-                  <v-expansion-panel bg-color="lightgrey">
-                    <v-expansion-panel-title>
-                      <span class="text-h6">Perform Job Match</span>
-                    </v-expansion-panel-title>
-                    <v-expansion-panel-text>
-                      <v-row>
-                        <v-col col="12">
-                          <v-textarea label="1. Paste job description here."></v-textarea>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col col="12">
-                          2. Check the boxes for the resumes below you would like to perform the match for.
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col col="12">
-                          3.
-                          <v-btn color="primary">Execute Match</v-btn>
-                        </v-col>
-                      </v-row>
-                    </v-expansion-panel-text>
-                  </v-expansion-panel>
-                </v-expansion-panels>
               </v-col>
             </v-row>
           </v-container>
@@ -209,54 +260,92 @@ function closeSnackBar() {
               <v-row>
                 <template v-for="resume in resumesData" :key="resume.resume_id">
                   <v-col cols="12">
-                    <v-card variant="tonal" style="position: relative;">
-                      <v-card-text>
-                        <v-row>
-                          <v-col cols="12" md="3" lg="2" xl="1">
-                            <div class="d-flex justify-center justify-sm-start">
-                              <span class="text-h6">Title: {{ resume.title ? resume.title : " [No Title]" }}</span>
-                            </div>
-                            <div class="p-2 d-flex justify-center justify-sm-start">
-                              <v-btn @click="openResumePdf(resume.resume_id)" color="primary">View PDF</v-btn>
-                            </div>
-                          </v-col>
-                          <v-spacer></v-spacer>
-                          <v-col cols="12" sm="auto">
-                            <div class="d-flex justify-center justify-sm-start">
-                              <div style="position: relative; width: 175px; height: 115px;">
-                                <vue-speedometer :needleHeightRatio=".9" :minValue="0" :maxValue="5"
-                                  :customSegmentStops="[0, 1, 2, 3, 4, 5]"
-                                  :segmentColors="jobMatchValue === null ? segmentColorsOff : segmentColorsOn"
-                                  :needleTransitionDuration="1000" needleTransition="easeBounceIn"
-                                  :value="jobMatchValue === null ? 0 : jobMatchValue" :fluidWidth="true" />
-                                <div v-if="jobMatchValue === null"
-                                  class="d-flex align-center justify-center position-absolute w-100 h-100"
-                                  style="top: 0; left: 0; background-color: rgba(255, 255, 255, 0.8);">
-                                  <span class="text-grey">No Job Match Score</span>
-                                </div>
-                              </div>
-                            </div>
-                          </v-col>
-                          <v-col v-if="jobMatchValue !== null" cols="12" sm="4" md="2"
-                            class="d-flex justify-center align-center">
-                            <span class="text-h5 font-weight-bold" :style="{ color: jobMatchTextColor }">
-                              Job Match: {{ jobMatchValue }}
-                            </span>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col cols="12" sm="9" class="d-flex justify-center justify-sm-start align-end pt-0 pb-0">
-                            <span class="text-subtitle-2 text-grey">Created: {{ resume.createdAt }}</span>
-                          </v-col>
-                          <v-col cols="12" sm="3" class="d-flex justify-center justify-sm-end align-end pt-0 pb-0">
-                            <v-icon @click="deleteResumePrompt(resume.resume_id)" size="x-large" color="red">
-                              mdi-delete-circle</v-icon>
-                          </v-col>
-                        </v-row>
-                      </v-card-text>
-                      <v-checkbox v-if="jobMatchExpanded" v-model="jobMatchList" color="green" :value="resume.resume_id"
-                        style="position: absolute; top: 0px; right: 10px;" />
-                    </v-card>
+                    <v-expansion-panels v-model="expandedPanels[resume.resume_id]">
+                      <v-expansion-panel :key="resume.resume_id" bg-color="#fafafa">
+                        <v-expansion-panel-title>
+                          <v-card @click.stop variant="flat" class="position-relative w-100"
+                            style="background-color: #fafafa">
+                            <v-card-text>
+                              <v-row>
+                                <v-col cols="12" sm="3" lg="2" xl="1">
+                                  <div class="d-flex justify-center justify-sm-start">
+                                    <span class="text-h6">Title: {{ resume.title ? resume.title : " [No Title]"
+                                      }}</span>
+                                  </div>
+                                  <div class="p-2 d-flex justify-center justify-sm-start">
+                                    <v-btn @click="openResumePdf(resume.resume_id)" color="primary">View PDF</v-btn>
+                                  </div>
+                                </v-col>
+                                <v-spacer></v-spacer>
+                                <v-col cols="12" sm="auto">
+                                  <div class="d-flex justify-center justify-sm-start">
+                                    <div style="position: relative; width: 175px; height: 115px;">
+                                      <vue-speedometer :needleHeightRatio=".9" :minValue="0" :maxValue="5"
+                                        :customSegmentStops="[0, 1, 2, 3, 4, 5]"
+                                        :segmentColors="getSegmentColors(resume.resume_id)"
+                                        :needleTransitionDuration="1000" needleTransition="easeBounceIn"
+                                        :forceRender="true" :value="Math.floor(jobMatchScore[resume.resume_id] || 0)"
+                                        :fluidWidth="true" />
+                                      <div v-if="!jobMatchScore[resume.resume_id]"
+                                        class="d-flex align-center justify-center position-absolute w-100 h-100"
+                                        style="top: 0; left: 0; background-color: rgba(255, 255, 255, 0.8);">
+                                        <span class="text-grey">Get Job Match</span>
+                                        <span>
+                                          <v-icon color="#999999" icon="mdi-hand-pointing-right"
+                                            size="x-large"></v-icon>
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </v-col>
+                                <v-col v-if="jobMatchScore[resume.resume_id]" cols="12" sm="4" md="2"
+                                  class="d-flex justify-center align-center">
+                                  <span class="text-h5 font-weight-bold"
+                                    :style="{ color: jobMatchTextColor[resume.resume_id] }">
+                                    Job Match: {{ jobMatchScore[resume.resume_id] || null }}
+                                  </span>
+                                </v-col>
+                              </v-row>
+                              <v-row>
+                                <v-col cols="12" sm="9"
+                                  class="d-flex justify-center justify-sm-start align-end pt-0 pb-0">
+                                  <span class="text-subtitle-2 text-grey">Created: {{ resume.createdAt }}</span>
+                                </v-col>
+                              </v-row>
+                            </v-card-text>
+                          </v-card>
+                          <v-icon @click.stop="deleteResumePrompt(resume.resume_id)" size="x-large" color="red"
+                            class="delete-icon">mdi-delete-circle</v-icon>
+                          <template v-slot:actions="{ expanded }">
+                            <v-icon class="ml-2" size="x-large" :color="!expanded ? 'blue' : 'red'"
+                              :icon="expanded ? 'mdi-cancel' : 'mdi-text-box-search-outline'"></v-icon>
+                          </template>
+                        </v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                          <v-divider class="mt-1 mb-13"></v-divider>
+                          <v-row>
+                            <v-col cols="12" sm="8">
+                              <v-textarea v-model="jobDescriptions[resume.resume_id]"
+                                label="1. Paste job description here."></v-textarea>
+                            </v-col>
+                            <v-col cols="12" sm="4">
+                              2. <v-btn color="primary"
+                                :disabled="!jobDescriptions[resume.resume_id] || jobDescriptions[resume.resume_id].length === 0"
+                                @click="getJobMatch(resume.resume_id, jobDescriptions[resume.resume_id])">Execute
+                                Match</v-btn>
+                            </v-col>
+                          </v-row>
+                          <v-row v-if="jobMatchCritique[resume.resume_id]" class="text-grey-darken-2">
+                            <v-col cols="12">
+                              <p class="text-h5">Job Match Critique:</p>
+                              <p >
+                                {{ jobMatchCritique[resume.resume_id] }}
+                              </p>
+                            </v-col>
+                          </v-row>
+                        </v-expansion-panel-text>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
                   </v-col>
                 </template>
               </v-row>
