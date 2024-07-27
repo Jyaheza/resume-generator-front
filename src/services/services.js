@@ -29,13 +29,6 @@ const apiClient = axios.create({
     }
     return JSON.stringify(data);
   },
-  // transformResponse: function (data) {
-  //   data = JSON.parse(data);
-  //   if (!data.success && data.code == "expired-session") {
-  //     localStorage.removeItem("user");
-  //   }
-  //   return data;
-  // },
 });
 
 apiClient.interceptors.response.use(
@@ -43,6 +36,10 @@ apiClient.interceptors.response.use(
   error => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("user");
+      localStorage.removeItem('menuBarFirst');
+      localStorage.removeItem('menuBarLast');
+      localStorage.removeItem('jobMatchResults');
+      localStorage.removeItem('jobDescriptions');
       router.push({ name: 'login' });
     }
     return Promise.reject(error);

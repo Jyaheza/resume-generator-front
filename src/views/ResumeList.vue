@@ -14,6 +14,7 @@ const segmentColorsOn = ["firebrick", "tomato", "gold", "yellowgreen", "limegree
 const segmentColorsOff = ["ghostwhite", "lightgrey", "grey", "darkgrey", "black"];
 
 const jobMatchScore = ref({});
+const jobDescriptions = ref({});
 const jobMatchCritique = ref({});
 const expandedPanels = ref([]);
 const showDeleteDialog = ref(false);
@@ -25,7 +26,7 @@ const snackbar = ref({
   color: "",
   text: "",
 });
-const jobDescriptions = ref({});
+const csVisibleValues = ref({});
 
 onMounted(async () => {
   loading.value = true;
@@ -47,11 +48,14 @@ async function setResumeData() {
   const resumeResponse = await ResumeServices.getResumesMeta(user.value.id);
   const resumesResponseData = resumeResponse.data;
   resumesData.value = resumesResponseData.length > 0 ? resumesResponseData : [];
+
+  resumesData.value.forEach((resume) => {
+    csVisibleValues.value[resume.resume_id] = resume.cs_visible === 1;
+  });
 }
 
 async function loadJobDescriptions() {
-  const existingJobDescriptions = localStorage.getItem('jobDescriptions');
-  const existingJobDescriptionsJson = existingJobDescriptions ? JSON.parse(existingJobDescriptions) : {};
+  const existingJobDescriptionsJson = getLocalStorageItemJson('jobDescriptions');
 
   Object.entries(existingJobDescriptionsJson).forEach(([key, value]) => {
     jobDescriptions.value[key] = value;
@@ -130,8 +134,11 @@ async function deleteResume(resumeId) {
     snackbar.value.value = true;
     snackbar.value.color = "green";
     snackbar.value.text = "Resume deleted successfully!";
+    deleteJobMatchLocalStorageItems(resumeId);
     resumesData.value = [];
     await setResumeData();
+    await loadJobMatchValues();
+    await loadJobDescriptions();
     setTimeout(() => {
       snackbar.value.value = false;
     }, 1500);
@@ -158,8 +165,7 @@ async function getJobMatch(resumeId, jobDescription) {
     loading.value = false;
   }
 
-  const existingJobDescriptions = localStorage.getItem('jobDescriptions');
-  const existingJobDescriptionsJson = existingJobDescriptions ? JSON.parse(existingJobDescriptions) : {};
+  const existingJobDescriptionsJson = getLocalStorageItemJson('jobDescriptions');
   existingJobDescriptionsJson[resumeId] = jobDescription;
   localStorage.setItem('jobDescriptions', JSON.stringify(existingJobDescriptionsJson));
 
@@ -173,8 +179,7 @@ async function getJobMatch(resumeId, jobDescription) {
 }
 
 async function saveJobMatchResult(jobMatchResult, resumeId, jobDescription) {
-  const existingResults = localStorage.getItem('jobMatchResults');
-  const existingResultsJson = existingResults ? JSON.parse(existingResults) : {};
+  const existingResultsJson = getLocalStorageItemJson('jobMatchResults');
 
   if (!existingResultsJson[resumeId]) {
     existingResultsJson[resumeId] = {};
@@ -182,14 +187,12 @@ async function saveJobMatchResult(jobMatchResult, resumeId, jobDescription) {
 
   existingResultsJson[resumeId].score = jobMatchResult.data.score;
   existingResultsJson[resumeId].critique = jobMatchResult.data.critique;
-  existingResultsJson[resumeId].jobDescription = jobDescription;
 
   localStorage.setItem('jobMatchResults', JSON.stringify(existingResultsJson));
 }
 
 async function loadJobMatchValues() {
-  const existingResults = localStorage.getItem('jobMatchResults');
-  const existingResultsJson = existingResults ? JSON.parse(existingResults) : {};
+  const existingResultsJson = getLocalStorageItemJson('jobMatchResults');
   Object.entries(existingResultsJson).forEach(([key, value]) => {
     const score = value.score;
     const critique = value.critique;
@@ -203,7 +206,33 @@ function getSegmentColors(resumeId) {
   const score = Math.floor(jobMatchScore.value[resumeId] || 0);
   const colors = !score ? segmentColorsOff : segmentColorsOn;
   return colors;
-};
+}
+
+function getLocalStorageItemJson(itemName) {
+  const existingResults = localStorage.getItem(itemName);
+  return existingResults ? JSON.parse(existingResults) : {};
+}
+
+function deleteJobMatchLocalStorageItems(resumeId) {
+  const jobMatchResultsJson = getLocalStorageItemJson('jobMatchResults');
+  const jobDescriptionsJson = getLocalStorageItemJson('jobDescriptions');
+  delete jobMatchResultsJson[resumeId];
+  delete jobDescriptionsJson[resumeId];
+  localStorage.setItem('jobMatchResults', JSON.stringify(jobMatchResultsJson));
+  localStorage.setItem('jobDescriptions', JSON.stringify(jobDescriptionsJson));
+  jobMatchScore.value = {};
+  jobDescriptions.value = {};
+  jobMatchCritique.value = {};
+}
+
+async function saveCsVisible(resumeId, csVisible) {
+  await ResumeServices.updateCsVisible(resumeId, csVisible);
+}
+
+function handleSwitchChange(resume) {
+  resume.cs_visible = resume.cs_visible === 1 ? 0 : 1;
+  saveCsVisible(resume.resume_id, resume.cs_visible);
+}
 
 </script>
 
@@ -258,27 +287,33 @@ function getSegmentColors(resumeId) {
           <template v-if="resumesData && resumesData.length > 0">
             <v-container>
               <v-row>
-                <template v-for="resume in resumesData" :key="resume.resume_id">
+                <template v-for="(resume, index) in resumesData" :key="index">
                   <v-col cols="12">
                     <v-expansion-panels v-model="expandedPanels[resume.resume_id]">
                       <v-expansion-panel :key="resume.resume_id" bg-color="#fafafa">
+                        <v-row>
+                          <v-col class="ml-4">
+                            <v-switch inset v-model="csVisibleValues[resume.resume_id]" experimentalModelPropName @change="handleSwitchChange(resume)" color="primary"
+                              label="Allow Resume Reviews From Student Services" hide-details></v-switch>
+                          </v-col>
+                        </v-row>
                         <v-expansion-panel-title>
                           <v-card @click.stop variant="flat" class="position-relative w-100"
                             style="background-color: #fafafa">
                             <v-card-text>
                               <v-row>
-                                <v-col cols="12" sm="3" lg="2" xl="1">
-                                  <div class="d-flex justify-center justify-sm-start">
+                                <v-col cols="12" md="3" lg="2" xl="1">
+                                  <div class="d-flex justify-center justify-md-start">
                                     <span class="text-h6">Title: {{ resume.title ? resume.title : " [No Title]"
                                       }}</span>
                                   </div>
-                                  <div class="p-2 d-flex justify-center justify-sm-start">
+                                  <div class="p-2 d-flex justify-center justify-md-start">
                                     <v-btn @click="openResumePdf(resume.resume_id)" color="primary">View PDF</v-btn>
                                   </div>
                                 </v-col>
                                 <v-spacer></v-spacer>
-                                <v-col cols="12" sm="auto">
-                                  <div class="d-flex justify-center justify-sm-start">
+                                <v-col cols="12" md="auto">
+                                  <div class="d-flex justify-center justify-md-start">
                                     <div style="position: relative; width: 175px; height: 115px;">
                                       <vue-speedometer :needleHeightRatio=".9" :minValue="0" :maxValue="5"
                                         :customSegmentStops="[0, 1, 2, 3, 4, 5]"
@@ -298,7 +333,7 @@ function getSegmentColors(resumeId) {
                                     </div>
                                   </div>
                                 </v-col>
-                                <v-col v-if="jobMatchScore[resume.resume_id]" cols="12" sm="4" md="2"
+                                <v-col v-if="jobMatchScore[resume.resume_id]" cols="12" md="2"
                                   class="d-flex justify-center align-center">
                                   <span class="text-h5 font-weight-bold"
                                     :style="{ color: jobMatchTextColor[resume.resume_id] }">
@@ -307,7 +342,7 @@ function getSegmentColors(resumeId) {
                                 </v-col>
                               </v-row>
                               <v-row>
-                                <v-col cols="12" sm="9"
+                                <v-col cols="12" md="9"
                                   class="d-flex justify-center justify-sm-start align-end pt-0 pb-0">
                                   <span class="text-subtitle-2 text-grey">Created: {{ resume.createdAt }}</span>
                                 </v-col>
@@ -338,7 +373,7 @@ function getSegmentColors(resumeId) {
                           <v-row v-if="jobMatchCritique[resume.resume_id]" class="text-grey-darken-2">
                             <v-col cols="12">
                               <p class="text-h5">Job Match Critique:</p>
-                              <p >
+                              <p>
                                 {{ jobMatchCritique[resume.resume_id] }}
                               </p>
                             </v-col>

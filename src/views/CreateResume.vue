@@ -156,10 +156,11 @@ const newResume = ref({
 
 onMounted(async () => {
     if (user.value) {
+        loading.value = true;
         try {
             const resumeDataresponse = await ResumeDataService.getResumeDatasByUserId(user.value.id);
             const resumeResponseData = resumeDataresponse.data;
-            resumeData.value = resumeResponseData.length > 0 ? resumeResponseData[0] : {};
+            resumeData.value = resumeResponseData.length > 0 ? resumeResponseData[0] : resumeData.value;
 
             const jobExperienceResponse = await ExperiencesServices.getExperiencesByUserId(user.value.id);
             const jobExperienceResponseData = jobExperienceResponse.data;
@@ -184,7 +185,7 @@ onMounted(async () => {
             resumeTitle.value = "";
 
             mapNewResumeData(resumeData, jobExperienceData, educationData, certificatesData, projectsData, skillsData, user.value.id);
-
+            loading.value = false;
         } catch (error) {
             console.error("Error fetching data:", error);
             resumeData.value = {};
@@ -193,6 +194,7 @@ onMounted(async () => {
             certificatesData.value = {};
             projectsData.value = {};
             skillsData.value = {};
+            loading.value = false;
         }
     }
 });
@@ -390,9 +392,8 @@ v-card-title:hover {
 
             <!-- Templates -->
             <v-row>
-                <v-col cols="12" class="cursor-pointer d-flex justify-center justify-sm-start align-center"
-                    @click="toggleSection('templates')">
-                    <v-icon v-if="!showTemplates">
+                <v-col cols="12" class="cursor-pointer d-flex justify-center justify-sm-start align-center">
+                    <v-icon v-if="!showTemplates" @click="toggleSection('templates')">
                         mdi-plus-circle-outline</v-icon>
                     <v-icon v-if="showTemplates" @click="toggleSection('templates')">
                         mdi-minus-circle-outline</v-icon>
@@ -724,7 +725,7 @@ v-card-title:hover {
             </v-col>
         </v-row>
     </v-footer>
-    <v-container v-if="!resumeData">
+    <v-container v-else-if="!resumeData">
         <v-col col="12">
             <p class="pl-0 text-h6 font-weight-bold d-flex text-center text-sm-start">You are missing professional
                 resume
