@@ -368,7 +368,7 @@ v-card-title:hover {
 </style>
 
 <template>
-    <v-container v-if="resumeData">
+    <v-container v-if="!loading && resumeData">
         <div id="body">
             <v-dialog v-model="dialog" max-width="600px">
                 <v-card>
@@ -714,7 +714,7 @@ v-card-title:hover {
             </v-row>
         </div>
     </v-container>
-    <v-footer v-if="resumeData" class="fixed-footer pt-3 pb-3" elevation="24">
+    <v-footer v-if="!loading && resumeData" class="fixed-footer pt-3 pb-3" elevation="24">
         <v-row>
             <v-col col="12" class="d-flex justify-center justify-sm-end align-center">
                 <v-btn rounded="xl" size="large" color="primary" @click="generateResume();">Generate
@@ -725,7 +725,7 @@ v-card-title:hover {
             </v-col>
         </v-row>
     </v-footer>
-    <v-container v-else-if="!resumeData">
+    <v-container v-else-if="!loading && !resumeData">
         <v-col col="12">
             <p class="pl-0 text-h6 font-weight-bold d-flex text-center text-sm-start">You are missing professional
                 resume
