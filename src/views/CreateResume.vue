@@ -368,6 +368,9 @@ v-card-title:hover {
 </style>
 
 <template>
+    <v-overlay :model-value="loading" contained persistent class="align-center justify-center">
+        <v-progress-circular :size="70" :width="7" color="primary" indeterminate></v-progress-circular>
+    </v-overlay>
     <v-container v-if="!loading && resumeData">
         <div id="body">
             <v-dialog v-model="dialog" max-width="600px">
@@ -380,10 +383,6 @@ v-card-title:hover {
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-            <v-overlay :model-value="loading" contained persistent class="align-center justify-center">
-                <v-progress-circular :size="70" :width="7" color="primary" indeterminate></v-progress-circular>
-            </v-overlay>
-
             <v-row class="mb-4">
                 <v-col cols="12 d-flex justify-center justify-sm-start">
                     <span class="pl-0 text-h4 font-weight-bold">Create a resume</span>
