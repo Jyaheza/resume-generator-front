@@ -156,10 +156,11 @@ const newResume = ref({
 
 onMounted(async () => {
     if (user.value) {
+        loading.value = true;
         try {
             const resumeDataresponse = await ResumeDataService.getResumeDatasByUserId(user.value.id);
             const resumeResponseData = resumeDataresponse.data;
-            resumeData.value = resumeResponseData.length > 0 ? resumeResponseData[0] : {};
+            resumeData.value = resumeResponseData.length > 0 ? resumeResponseData[0] : resumeData.value;
 
             const jobExperienceResponse = await ExperiencesServices.getExperiencesByUserId(user.value.id);
             const jobExperienceResponseData = jobExperienceResponse.data;
@@ -184,7 +185,7 @@ onMounted(async () => {
             resumeTitle.value = "";
 
             mapNewResumeData(resumeData, jobExperienceData, educationData, certificatesData, projectsData, skillsData, user.value.id);
-
+            loading.value = false;
         } catch (error) {
             console.error("Error fetching data:", error);
             resumeData.value = {};
@@ -193,6 +194,7 @@ onMounted(async () => {
             certificatesData.value = {};
             projectsData.value = {};
             skillsData.value = {};
+            loading.value = false;
         }
     }
 });
@@ -366,7 +368,10 @@ v-card-title:hover {
 </style>
 
 <template>
-    <v-container v-if="resumeData">
+    <v-overlay :model-value="loading" contained persistent class="align-center justify-center">
+        <v-progress-circular :size="70" :width="7" color="primary" indeterminate></v-progress-circular>
+    </v-overlay>
+    <v-container v-if="!loading && resumeData">
         <div id="body">
             <v-dialog v-model="dialog" max-width="600px">
                 <v-card>
@@ -378,10 +383,6 @@ v-card-title:hover {
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-            <v-overlay :model-value="loading" contained persistent class="align-center justify-center">
-                <v-progress-circular :size="70" :width="7" color="primary" indeterminate></v-progress-circular>
-            </v-overlay>
-
             <v-row class="mb-4">
                 <v-col cols="12 d-flex justify-center justify-sm-start">
                     <span class="pl-0 text-h4 font-weight-bold">Create a resume</span>
@@ -390,9 +391,8 @@ v-card-title:hover {
 
             <!-- Templates -->
             <v-row>
-                <v-col cols="12" class="cursor-pointer d-flex justify-center justify-sm-start align-center"
-                    @click="toggleSection('templates')">
-                    <v-icon v-if="!showTemplates">
+                <v-col cols="12" class="cursor-pointer d-flex justify-center justify-sm-start align-center">
+                    <v-icon v-if="!showTemplates" @click="toggleSection('templates')">
                         mdi-plus-circle-outline</v-icon>
                     <v-icon v-if="showTemplates" @click="toggleSection('templates')">
                         mdi-minus-circle-outline</v-icon>
@@ -713,7 +713,7 @@ v-card-title:hover {
             </v-row>
         </div>
     </v-container>
-    <v-footer v-if="resumeData" class="fixed-footer pt-3 pb-3" elevation="24">
+    <v-footer v-if="!loading && resumeData" class="fixed-footer pt-3 pb-3" elevation="24">
         <v-row>
             <v-col col="12" class="d-flex justify-center justify-sm-end align-center">
                 <v-btn rounded="xl" size="large" color="primary" @click="generateResume();">Generate
@@ -724,7 +724,7 @@ v-card-title:hover {
             </v-col>
         </v-row>
     </v-footer>
-    <v-container v-if="!resumeData">
+    <v-container v-else-if="!loading && !resumeData">
         <v-col col="12">
             <p class="pl-0 text-h6 font-weight-bold d-flex text-center text-sm-start">You are missing professional
                 resume

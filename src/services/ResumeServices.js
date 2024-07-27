@@ -25,4 +25,7 @@ export default {
   deleteResume(resumeId) {
     return apiClient.delete(`resumes/${resumeId}`);
   },
+  updateCsVisible(resumeId, csVisible){
+    return apiClient.put(`resumes/csvisible/${resumeId}/${csVisible}`);
+  }
 };

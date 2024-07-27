@@ -34,6 +34,9 @@ function logout() {
   localStorage.removeItem('user');
   localStorage.removeItem('menuBarFirst');
   localStorage.removeItem('menuBarLast');
+  localStorage.removeItem('jobMatchResults');
+  localStorage.removeItem('jobDescriptions');
+
   user.value = null;
   router.push({ name: 'login' });
 }
