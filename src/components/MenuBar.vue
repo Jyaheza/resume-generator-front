@@ -57,10 +57,12 @@ function redirectToHome() {
 const isMenuVisible = (menuItem) => {
   if (!user.value) return false;
   const role = user.value.role; // change role = "Admin" or "career services" to see the menu items change
+  console.log(role);
+  console.log(menuItem);
   switch (role) {
     case 'admin':
       return true;
-    case 'career services':
+    case 'career_serv':
       return menuItem !== 'manageUsers';
     case 'student':
       return ['createResume', 'userCrud', 'home', 'matchWithJob'].includes(menuItem);
@@ -84,7 +86,6 @@ const isMenuVisible = (menuItem) => {
     </v-list-item>
 
     <v-divier></v-divier>
-
     <v-list density="compact" nav>
       <v-list-item v-if="isMenuVisible('createResume')" prepend-icon="mdi-file-plus" title="Create Resume"
         @click="router.push({ name: 'createResume' })"></v-list-item>
