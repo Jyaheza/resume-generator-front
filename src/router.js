@@ -59,6 +59,11 @@ const router = createRouter({
       component: () => import("./views/UserSkill.vue"),
     },
     {
+      path: "/careerseviceshome",
+      name: "careerserviceshome",
+      component: () => import("./views/CareerServicesHomePage.vue"),
+    },
+    {
       path: "/manageUsers",
       name: "manageUsers",
       component: () => import("./views/ManageUsers.vue"),
