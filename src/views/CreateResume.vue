@@ -222,6 +222,7 @@ function mapNewResumeData(resumeData, jobExperienceData, educationData, certific
 
     // Mapping education data
     newResume.value.resume.education = educationData.value.map(education => ({
+        id: education.id || "",
         name: education.education_name || "",
         location: education.location || "",
         startYear: education.start_year || "",
@@ -317,8 +318,11 @@ function closeSnackBar() {
     snackbar.value.value = false;
 }
 
-function divToggle() {
-    alert('Not yet implemented');
+function removeResumeItem(sectionData, idToRemove) {
+    const index = sectionData.findIndex(item => item.id === idToRemove);
+    if (index !== -1) {
+        sectionData.splice(index, 1);
+    }
 }
 
 </script>
@@ -472,7 +476,8 @@ v-card-title:hover {
                                 <v-form>
                                     <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
                                         <v-col cols="12">
-                                            <v-btn @click="divToggle()" color="#FF0000">Remove
+                                            <v-btn @click="removeResumeItem(jobExperienceData, experience.id)"
+                                                color="#FF0000">Remove
                                                 from this resume</v-btn>
                                         </v-col>
                                         <v-col cols="12" sm="6" md="4">
@@ -505,13 +510,6 @@ v-card-title:hover {
                             </template>
                         </template>
                     </template>
-                    <v-row>
-                        <v-col class="d-flex justify-center justify-sm-start">
-                            <v-btn @click="divToggle('add_job', 'submit_job', 'job_table', 'fill_job')" id="add_job"
-                                color="#000235">Add
-                                new job</v-btn>
-                        </v-col>
-                    </v-row>
                 </v-col>
             </v-row>
 
@@ -531,7 +529,8 @@ v-card-title:hover {
                                 <v-form>
                                     <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
                                         <v-col cols="12">
-                                            <v-btn @click="divToggle()" color="#FF0000">Remove
+                                            <v-btn @click="removeResumeItem(educationData, education.id)"
+                                                color="#FF0000">Remove
                                                 from
                                                 this resume</v-btn>
                                         </v-col>
@@ -569,13 +568,6 @@ v-card-title:hover {
                             </template>
                         </template>
                     </template>
-                    <v-row>
-                        <v-col class="d-flex justify-center justify-sm-start">
-                            <v-btn
-                                @click="divToggle('add_education', 'submit_education', 'education_table', 'fill_education')"
-                                id="add_education" color="#000235">Add new education</v-btn>
-                        </v-col>
-                    </v-row>
                 </v-col>
             </v-row>
 
@@ -595,7 +587,8 @@ v-card-title:hover {
                                 <v-form>
                                     <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
                                         <v-col cols="12">
-                                            <v-btn @click="divToggle()" color="#FF0000">Remove from
+                                            <v-btn @click="removeResumeItem(projectsData, project.id)"
+                                                color="#FF0000">Remove from
                                                 this
                                                 resume</v-btn>
                                         </v-col>
@@ -623,12 +616,6 @@ v-card-title:hover {
                             </template>
                         </template>
                     </template>
-                    <v-row>
-                        <v-col class="d-flex justify-center justify-sm-start">
-                            <v-btn @click="divToggle('add_project', 'submit_project', 'project_table', 'fill_project')"
-                                id="add_project" color="#000235">Add new project</v-btn>
-                        </v-col>
-                    </v-row>
                 </v-col>
             </v-row>
 
@@ -648,7 +635,8 @@ v-card-title:hover {
                                 <v-form>
                                     <v-row class="hover-row" @mouseover="hover = true" @mouseleave="hover = false">
                                         <v-col cols="12">
-                                            <v-btn @click="divToggle()" color="#FF0000">Remove
+                                            <v-btn @click="removeResumeItem(certificatesData, certificate.id)"
+                                                color="#FF0000">Remove
                                                 from this resume</v-btn>
                                         </v-col>
                                         <v-col cols="12" sm="6" md="4">
@@ -675,13 +663,6 @@ v-card-title:hover {
                             </template>
                         </template>
                     </template>
-                    <v-row>
-                        <v-col class="d-flex justify-center justify-sm-start">
-                            <v-btn
-                                @click="divToggle('add_certificate', 'submit_certificate', 'certificates_table', 'fill_certificate')"
-                                id="add_certificate" color="#000235">Add new certificate</v-btn>
-                        </v-col>
-                    </v-row>
                 </v-col>
             </v-row>
 
@@ -699,16 +680,18 @@ v-card-title:hover {
                         <v-row>
                             <template v-for="(skill, index) in skillsData" :key="index">
                                 <v-col cols="12" sm="6" md="4" lg="3">
-                                    <v-text-field v-model="skill.name" label="Skill"></v-text-field>
+                                    <v-text-field v-model="skill.name" label="Skill">
+                                        <template v-slot:append>
+                                            <v-icon color="red" @click="removeResumeItem(skillsData, skill.id)">
+                                                mdi-minus-circle-outline
+                                            </v-icon>
+                                            <v-tooltip activator="parent" location="end">Remove Skill</v-tooltip>
+                                        </template>
+                                    </v-text-field>
                                 </v-col>
                             </template>
                         </v-row>
                     </template>
-                    <v-row>
-                        <v-col class="d-flex justify-center justify-sm-start">
-                            <v-btn @click="divToggle()" color="#000235">Add Skill</v-btn>
-                        </v-col>
-                    </v-row>
                 </v-col>
             </v-row>
         </div>
