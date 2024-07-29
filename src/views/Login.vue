@@ -17,7 +17,7 @@ const user = ref({
   lastName: "",
   email: "",
   password: "",
-  role: "careerservices"  //other options are "careerservices and admin"
+  role: "" 
 });
 
 onMounted(async () => {
@@ -66,9 +66,21 @@ async function login() {
       TODO: resume default redirect to resumes 
       after we create appropriate homepages for every user 
       */
-      router.push({ name: "resumes" /*(user.value.role+"home") */}); // 
-      isLoading.value = false;
-      router.push({ name:  "resumes" /*(user.value.role+"home") */ });
+      user.value = JSON.parse(localStorage.getItem('user'));
+      if (user.value === null) {
+        router.push({ name: "login" });
+      } else {
+        if (user.value.role == 'admin') {
+          router.push({ name: "manageUsers" });
+        }
+        if (user.value.role == 'student') {
+          router.push({ name: "resumes" });
+        }
+        if (user.value.role == 'career_serv') {
+          router.push({ name: "careerserviceshome" });
+        }
+      }
+    
     })
     .catch((error) => {
       console.log(error);

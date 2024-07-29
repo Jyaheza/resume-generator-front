@@ -10,9 +10,12 @@ export default {
   getReview(id) {
     return apiClient.get(`reviews/${id}`);
   },
-  addReview(userId, reviewParams) {
-    return apiClient.post(`reviews/${userId}`,reviewParams);
+  getReviewsForResume(resumeId) {
+    return apiClient.get(`/reviews/${resumeId}`);
   },
+  addReview(userId, reviewParams) {
+    return apiClient.post(`reviews/${userId}`, reviewParams);
+  },  
   updateReview(reviewId, review) {
     return apiClient.put(`reviews/${reviewId}`, review);
   },
