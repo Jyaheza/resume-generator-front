@@ -17,12 +17,12 @@ const user = ref({
   lastName: "",
   email: "",
   password: "",
-  role: "careerservices"  //other options are "careerservices and admin"
+  role: "Student" // Set user to student by default 
 });
 
 onMounted(async () => {
   if (localStorage.getItem("user") !== null) {
-    router.push({ name: "resumes" }); // TODO: change this to appropriate landing page for signed in user's
+    router.push({ name: "resumes" });
   }
 });
 
@@ -34,7 +34,7 @@ async function createAccount() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = "Account created successfully!";
-      router.push({ name: "login" });
+      router.push({ name: "resumes" });
       user.value = {};
       isCreateAccount.value = false;
       isLoading.value = false;
@@ -61,14 +61,10 @@ async function login() {
       window.localStorage.setItem("user", JSON.stringify(data.data));
       snackbar.value.value = true;
       snackbar.value.color = "green";
-      snackbar.value.text = "Login successful!";
-      /*
-      TODO: resume default redirect to resumes 
-      after we create appropriate homepages for every user 
-      */
-      router.push({ name: "resumes" /*(user.value.role+"home") */}); // 
-      isLoading.value = false;
-      router.push({ name:  "resumes" /*(user.value.role+"home") */ });
+      snackbar.value.text = "Login successful!"
+        router.push({ name: "careerserviceshome" });
+        isLoading.value = false;
+        router.push({ name: "careerserviceshome" });
     })
     .catch((error) => {
       console.log(error);

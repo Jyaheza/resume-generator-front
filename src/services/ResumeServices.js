@@ -7,6 +7,9 @@ export default {
   getResumesMeta(userId){
     return apiClient.get(`resumes/meta/user/${userId}`);
   },
+  getCareersServicesResumesMeta(userId){
+    return apiClient.get(`resumes/careerservicesmeta/${userId}`);
+  },
   getResumesByUserId(userId) {
     return apiClient.get(`resumes/user/${userId}`);
   },
