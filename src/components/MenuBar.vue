@@ -46,19 +46,25 @@ function redirectToHome() {
   * Function to redirect user to proper homepage
   * based on the role
   */
-  if (user.value.role == 'admin') {
-    router.push({ name: "admin" });
+  if (user.value === null) {
+    router.push({ name: "login" });
+  } else {
+    if (user.value.role == 'admin') {
+      router.push({ name: "manageUsers" });
+    }
+    if (user.value.role == 'student') {
+      router.push({ name: "resumes" });
+    }
+    if (user.value.role == 'career_serv') {
+      router.push({ name: "careerserviceshome" });
+    }
   }
-  if (user.value.role == 'student') {
-    router.push({ name: "resumes" });
-  }
+
 }
 
 const isMenuVisible = (menuItem) => {
   if (!user.value) return false;
   const role = user.value.role; // change role = "Admin" or "career services" to see the menu items change
-  console.log(role);
-  console.log(menuItem);
   switch (role) {
     case 'admin':
       return true;
@@ -94,7 +100,7 @@ const isMenuVisible = (menuItem) => {
       <v-list-item v-if="isMenuVisible('review')" prepend-icon="mdi-star" title="Review"
         @click="router.push({ name: 'reviewResume' })"></v-list-item>
       <v-list-item v-if="isMenuVisible('home')" prepend-icon="mdi-home" title="Home"
-        @click="router.push({ name: 'resumes' })"></v-list-item>
+        @click="redirectToHome()"></v-list-item>
       <v-list-item v-if="isMenuVisible('manageUsers')" prepend-icon="mdi-account-multiple" title="Manage Users"
         @click="router.push({ name: 'manageUsers' })"></v-list-item>
       <v-list-item v-if="user" prepend-icon="mdi-logout" title="Logout" @click="logout()"></v-list-item>
