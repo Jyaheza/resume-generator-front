@@ -12,8 +12,6 @@ user.value = JSON.parse(localStorage.getItem("user"));
 
 const segmentColorsOn = ["firebrick", "tomato", "gold", "yellowgreen", "limegreen"];
 const segmentColorsOff = ["gray", "gray", "gray", "gray", "gray"];
-const jobMatchExpanded = ref(false);
-const jobMatchList = ref([]);
 const expandedPanels = ref([0]);
 const snackbar = ref({ value: false, text: "", color: "" });
 
@@ -87,13 +85,6 @@ function b64toBlob(base64Data, contentType = "", sliceSize = 512) {
   return blob;
 }
 
-watch(expandedPanels, (newVal) => {
-  if (newVal === 0) {
-    jobMatchExpanded.value = true;
-  } else {
-    jobMatchExpanded.value = false;
-  }
-});
 
 function deleteResumePrompt(resumeId) {
   showDeleteDialog.value = true;
@@ -197,33 +188,6 @@ async function fetchReviews(resumeId) {
                   hide-details
                 ></v-text-field>
               </v-col>
-              <v-col v-if="filteredResumes.length > 0" cols="12">
-                <v-expansion-panels v-model="expandedPanels">
-                  <v-expansion-panel bg-color="lightgrey">
-                    <v-expansion-panel-title>
-                      <span class="text-h6">Perform Job Match</span>
-                    </v-expansion-panel-title>
-                    <v-expansion-panel-text>
-                      <v-row>
-                        <v-col col="12">
-                          <v-textarea label="1. Paste job description here."></v-textarea>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col col="12">
-                          2. Check the boxes for the resumes below you would like to perform the match for.
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col col="12">
-                          3.
-                          <v-btn color="primary">Execute Match</v-btn>
-                        </v-col>
-                      </v-row>
-                    </v-expansion-panel-text>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </v-col>
             </v-row>
           </v-container>
           <template v-if="filteredResumes.length > 0">
@@ -236,7 +200,7 @@ async function fetchReviews(resumeId) {
                         <v-row>
                           <v-col cols="12" md="3" lg="2" xl="1">
                             <div class="d-flex justify-center justify-sm-start">
-                              <span class="text-h6">Name: {{ resume.full_name ? resume.full_name : " [Name Missing]" }}</span>
+                              <span class="text-h6">{{ resume.full_name ? resume.full_name : " [Name Missing]" }}</span>
                             </div>
                             <div class="p-2 d-flex justify-center justify-sm-start">
                               <v-btn @click="openResumePdf(resume.resume_id)" color="primary">View PDF</v-btn>
@@ -246,24 +210,8 @@ async function fetchReviews(resumeId) {
                           <v-col cols="12" sm="auto">
                             <div class="d-flex justify-center justify-sm-start">
                               <div style="position: relative; width: 175px; height: 115px;">
-                                <vue-speedometer :needleHeightRatio=".9" :minValue="0" :maxValue="5"
-                                  :customSegmentStops="[0, 1, 2, 3, 4, 5]"
-                                  :segmentColors="jobMatchValue === null ? segmentColorsOff : segmentColorsOn"
-                                  :needleTransitionDuration="1000" needleTransition="easeBounceIn"
-                                  :value="jobMatchValue === null ? 0 : jobMatchValue" :fluidWidth="true" />
-                                <div v-if="jobMatchValue === null"
-                                  class="d-flex align-center justify-center position-absolute w-100 h-100"
-                                  style="top: 0; left: 0; background-color: rgba(255, 255, 255, 0.8);">
-                                  <span class="text-grey">No Job Match Score</span>
-                                </div>
                               </div>
                             </div>
-                          </v-col>
-                          <v-col v-if="jobMatchValue !== null" cols="12" sm="4" md="2"
-                            class="d-flex justify-center align-center">
-                            <span class="text-h5 font-weight-bold" :style="{ color: jobMatchTextColor }">
-                              Job Match: {{ jobMatchValue }}
-                            </span>
                           </v-col>
                         </v-row>
                         <v-row>
@@ -280,8 +228,6 @@ async function fetchReviews(resumeId) {
                           </v-col>
                         </v-row>
                       </v-card-text>
-                      <v-checkbox v-if="jobMatchExpanded" v-model="jobMatchList" color="green" :value="resume.resume_id"
-                        style="position: absolute; top: 0px; right: 10px;" />
                     </v-card>
                   </v-col>
                 </template>
