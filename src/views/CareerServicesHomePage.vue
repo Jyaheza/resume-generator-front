@@ -226,7 +226,7 @@ async function fetchReviews(resumeId) {
                   <span class="text-h5">No Resumes Found...</span>
                 </v-col>
                 <v-col cols="12 d-flex justify-center align-center">
-                  <v-btn color="primary" @click="router.push({ name: 'createResume' });">Generate A Resume</v-btn>
+                  <v-btn @click="router.push({ name: 'createResume' });" color="primary">Generate A Resume</v-btn>
                 </v-col>
               </v-row>
             </v-container>
@@ -236,50 +236,70 @@ async function fetchReviews(resumeId) {
     </div>
     <!-- Add Review Dialog -->
     <v-dialog v-model="dialog" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Reviews</span>
-        </v-card-title>
-        <v-card-text>
-          <div v-if="existingReviews.length > 0">
-            <v-row align="start">
-              <v-col v-for="review in existingReviews" :key="review.id" cols="12" class="mb-3">
-                <v-card class="ma-1 pa-2" outlined>
-                  <v-card-text>
-                    <v-row>
-                      <v-col cols="12" class="font-weight-bold">Comments:</v-col>
-                      <v-col cols="12">{{ review.comments }}</v-col>
-                      <v-col cols="12" class="font-weight-bold">Suggestions:</v-col>
-                      <v-col cols="12">{{ review.suggestions }}</v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12" sm="6" class="d-flex justify-sm-start justify-center pa-0">
-                        <span class="text-subtitle-2 text-grey">Created: {{ review.createdAt }}</span>
-                      </v-col>
-                      <v-col cols="12" sm="6" class="d-flex justify-sm-end justify-center pa-0">
-                        <span class="text-subtitle-2 text-grey">Reviewer: {{ review.reviewer_name }}</span>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-            </v-row>
-          </div>
-          <div v-else>
-            <p>No reviews available.</p>
-          </div>
-          <div class="mt-4">
-            <v-textarea v-model="reviewComments" label="New Comments" required></v-textarea>
-            <v-textarea v-model="reviewSuggestions" label="New Suggestions"></v-textarea>
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="closeReviewDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="submitReview">Submit</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+  <v-card>
+    <v-card-title class="headline">
+      Reviews
+    </v-card-title>
+    <v-card-text>
+      <div v-if="existingReviews.length">
+        <v-divider class="mb-4"></v-divider>
+        <v-row align="start">
+          <v-col
+            v-for="review in existingReviews"
+            :key="review.id"
+            cols="12"
+            class="mb-3"
+          >
+            <v-card class="ma-1 pa-3" outlined elevation="2" rounded="lg">
+              <v-card-title class="d-flex align-center font-weight-bold">
+                <v-icon left color="primary">mdi-account-circle</v-icon>
+                 {{ review.reviewer_name }}
+              </v-card-title>
+              <v-divider></v-divider>
+              <v-card-text>
+                <div class="mt-3">
+                  <div class="font-weight-bold">Comments:</div>
+                  <div>{{ review.comments }}</div>
+                </div>
+                <div class="mt-3"> 
+                  <div class="font-weight-bold">Suggestions:</div>
+                  <div>{{ review.suggestions }}</div>
+                </div>
+              </v-card-text>
+              <v-card-actions class="d-flex justify-between pa-0">
+                <span class="text-subtitle-2 text-grey">Created: {{ review.createdAt }}</span>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </div>
+      <div v-else>
+        <p>No reviews available.</p>
+      </div>
+      <v-divider class="my-4"></v-divider>
+      <div>
+        <v-textarea
+          v-model="reviewComments"
+          label="New Comments"
+          required
+          outlined
+          prepend-inner-icon="mdi-comment"
+        ></v-textarea>
+        <v-textarea
+          v-model="reviewSuggestions"
+          label="New Suggestions"
+          outlined
+          prepend-inner-icon="mdi-lightbulb"
+        ></v-textarea>
+      </div>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn color="red darken-1" text @click="closeReviewDialog">Cancel</v-btn>
+      <v-btn color="primary" text @click="submitReview">Submit</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
 
     <!-- Delete Confirmation Dialog -->
     <v-dialog v-model="showDeleteDialog" persistent max-width="400px">
@@ -288,8 +308,8 @@ async function fetchReviews(resumeId) {
         <v-card-text>Are you sure you want to delete this resume?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="showDeleteDialog = false">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="deleteResume(resumeToDelete)">Delete</v-btn>
+          <v-btn color="blue darken-1"  @click="showDeleteDialog = false">Cancel</v-btn>
+          <v-btn color="blue darken-1"  @click="deleteResume(resumeToDelete)">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

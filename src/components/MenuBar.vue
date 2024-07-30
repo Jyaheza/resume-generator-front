@@ -98,7 +98,7 @@ const isMenuVisible = (menuItem) => {
       <v-list-item v-if="isMenuVisible('userCrud')" prepend-icon="mdi-file-edit" title="User Info"
         @click="router.push({ name: 'userCrud' })"></v-list-item>
       <v-list-item v-if="isMenuVisible('review')" prepend-icon="mdi-star" title="Review"
-        @click="router.push({ name: 'reviewResume' })"></v-list-item>
+        @click="router.push({ name: 'careerserviceshome' })"></v-list-item>
       <v-list-item v-if="isMenuVisible('home')" prepend-icon="mdi-home" title="Home"
         @click="redirectToHome()"></v-list-item>
       <v-list-item v-if="isMenuVisible('manageUsers')" prepend-icon="mdi-account-multiple" title="Manage Users"
