@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import ResumeServices from "../services/ResumeServices";
 import JobMatchServices from "../services/JobMatchServices";
 import VueSpeedometer from "vue-speedometer"
+import ReviewServices from "../services/ReviewServices";
 
 const router = useRouter();
 const resumesData = ref([]);
@@ -27,6 +28,9 @@ const snackbar = ref({
   text: "",
 });
 const csVisibleValues = ref({});
+const reviewDialog = ref(false);
+const selectedResumeId = ref(null);
+const existingReviews = ref([]);
 
 onMounted(async () => {
   loading.value = true;
@@ -234,6 +238,29 @@ function handleSwitchChange(resume) {
   saveCsVisible(resume.resume_id, resume.cs_visible);
 }
 
+async function openReviewDialog(resumeId) {
+  existingReviews.value = [];
+  loading.value = true;
+  selectedResumeId.value = resumeId;
+  await fetchReviews(resumeId);
+  loading.value = false;
+  reviewDialog.value = true;
+}
+
+function closeReviewDialog() {
+  reviewDialog.value = false;
+}
+
+
+async function fetchReviews(resumeId) {
+  try {
+    const response = await ReviewServices.getReviewsForResume(resumeId);
+    existingReviews.value = response.data;
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+  }
+}
+
 </script>
 
 <style scoped>
@@ -246,9 +273,55 @@ function handleSwitchChange(resume) {
   bottom: 16px;
   right: 22px;
 }
+
+.comment-icon {
+  position: absolute;
+  bottom: 50px;
+  right: 22px;
+}
 </style>
 
 <template>
+  <v-dialog v-model="reviewDialog" persistent max-width="600px">
+    <v-card>
+      <v-card-title>
+        <span class="headline">Reviews</span>
+      </v-card-title>
+      <v-card-text>
+        <div v-if="existingReviews.length > 0">
+          <v-row align="start">
+            <v-col v-for="review in existingReviews" :key="review.id" cols="12" class="mb-3">
+              <v-card class="ma-1 pa-2" outlined>
+                <v-card-text>
+                  <v-row>
+                    <v-col cols="12" class="font-weight-bold">Comments:</v-col>
+                    <v-col cols="12">{{ review.comments }}</v-col>
+                    <v-col cols="12" class="font-weight-bold">Suggestions:</v-col>
+                    <v-col cols="12">{{ review.suggestions }}</v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6" class="d-flex justify-sm-start justify-center pa-0">
+                      <span class="text-subtitle-2 text-grey">Created: {{ review.createdAt }}</span>
+                    </v-col>
+                    <v-col cols="12" sm="6" class="d-flex justify-sm-end justify-center pa-0">
+                      <span class="text-subtitle-2 text-grey">Reviewer: {{ review.reviewer_name }}</span>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </div>
+        <div v-else>
+          <p>No reviews available.</p>
+        </div>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" text @click="closeReviewDialog">Cancel</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
   <v-dialog v-model="showDeleteDialog" max-width="500px">
     <v-card>
       <v-card-title class="headline">Confirm Delete</v-card-title>
@@ -293,7 +366,8 @@ function handleSwitchChange(resume) {
                       <v-expansion-panel :key="resume.resume_id" bg-color="#fafafa">
                         <v-row>
                           <v-col class="ml-4">
-                            <v-switch inset v-model="csVisibleValues[resume.resume_id]" experimentalModelPropName @change="handleSwitchChange(resume)" color="primary"
+                            <v-switch inset v-model="csVisibleValues[resume.resume_id]" experimentalModelPropName
+                              @change="handleSwitchChange(resume)" color="primary"
                               label="Allow Resume Reviews From Student Services" hide-details></v-switch>
                           </v-col>
                         </v-row>
@@ -324,7 +398,7 @@ function handleSwitchChange(resume) {
                                       <div v-if="!jobMatchScore[resume.resume_id]"
                                         class="d-flex align-center justify-center position-absolute w-100 h-100"
                                         style="top: 0; left: 0; background-color: rgba(255, 255, 255, 0.8);">
-                                        <span class="text-grey">Get Job Match</span>
+                                        <span class="text-grey pr-2">Get Job Match</span>
                                         <span>
                                           <v-icon color="#999999" icon="mdi-hand-pointing-right"
                                             size="x-large"></v-icon>
@@ -349,8 +423,20 @@ function handleSwitchChange(resume) {
                               </v-row>
                             </v-card-text>
                           </v-card>
-                          <v-icon @click.stop="deleteResumePrompt(resume.resume_id)" size="x-large" color="red"
-                            class="delete-icon">mdi-delete-circle</v-icon>
+                          <v-hover>
+                            <template v-slot:default="{ isHovering, props }">
+                              <v-icon @click.stop="deleteResumePrompt(resume.resume_id)" v-bind="props" size="x-large" :color="isHovering ? 'red' : 'red-lighten-2'"
+                                class="delete-icon">mdi-delete-circle</v-icon>
+                            </template>
+                          </v-hover>
+                          <v-hover>
+                            <template v-slot:default="{ isHovering, props }">
+                              <v-icon @click.stop="openReviewDialog(resume.resume_id)" v-bind="props" size="x-large"
+                                :color="isHovering ? 'blue' : 'blue-lighten-3'" class="comment-icon">
+                                mdi-comment
+                              </v-icon>
+                            </template>
+                          </v-hover>
                           <template v-slot:actions="{ expanded }">
                             <v-icon class="ml-2" size="x-large" :color="!expanded ? 'blue' : 'red'"
                               :icon="expanded ? 'mdi-cancel' : 'mdi-text-box-search-outline'"></v-icon>

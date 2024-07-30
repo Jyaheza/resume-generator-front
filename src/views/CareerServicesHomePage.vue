@@ -3,16 +3,11 @@ import { onMounted, ref, watch, computed } from "vue";
 import { useRouter } from "vue-router";
 import ResumeServices from "../services/ResumeServices";
 import ReviewServices from "../services/ReviewServices";
-import VueSpeedometer from "vue-speedometer"
 
 const router = useRouter();
 const resumesData = ref([]);
 const user = ref(null);
 user.value = JSON.parse(localStorage.getItem("user"));
-
-const segmentColorsOn = ["firebrick", "tomato", "gold", "yellowgreen", "limegreen"];
-const segmentColorsOff = ["gray", "gray", "gray", "gray", "gray"];
-const expandedPanels = ref([0]);
 const snackbar = ref({ value: false, text: "", color: "" });
 
 const dialog = ref(false);
@@ -113,6 +108,7 @@ function closeSnackBar() {
 }
 
 function openReviewDialog(resumeId) {
+  existingReviews.value = [];
   selectedResumeId.value = resumeId;
   dialog.value = true;
   fetchReviews(resumeId);
@@ -122,7 +118,6 @@ function closeReviewDialog() {
   dialog.value = false;
   reviewComments.value = "";
   reviewSuggestions.value = "";
-  existingReviews.value = [];
 }
 
 async function submitReview() {
@@ -163,13 +158,7 @@ async function fetchReviews(resumeId) {
   }
 }
 
-
-
-
 </script>
-
-
-
 <template>
   <v-container>
     <div id="body">
@@ -178,15 +167,10 @@ async function fetchReviews(resumeId) {
           <v-container>
             <v-row>
               <v-col cols="12" sm="6" class="d-flex align-center">
-                <div class="text-h5">My Resumes:</div>
+                <div class="text-h5">Student Resumes:</div>
               </v-col>
               <v-col cols="12" sm="6" class="d-flex justify-end align-center">
-                <v-text-field
-                  v-model="searchQuery"
-                  label="Search by Name"
-                  clearable
-                  hide-details
-                ></v-text-field>
+                <v-text-field v-model="searchQuery" label="Search by Name" clearable hide-details></v-text-field>
               </v-col>
             </v-row>
           </v-container>
@@ -219,7 +203,8 @@ async function fetchReviews(resumeId) {
                             <span class="text-subtitle-2 text-grey">Created: {{ resume.createdAt }}</span>
                           </v-col>
                           <v-col cols="12" sm="3" class="d-flex justify-center justify-sm-end align-end pt-0 pb-0">
-                            <v-icon @click="openReviewDialog(resume.resume_id)" size="x-large" color="blue" class="mr-4">
+                            <v-icon @click="openReviewDialog(resume.resume_id)" size="x-large" color="blue"
+                              class="mr-4">
                               mdi-comment
                             </v-icon>
                             <v-icon @click="deleteResumePrompt(resume.resume_id)" size="x-large" color="red">
@@ -250,60 +235,51 @@ async function fetchReviews(resumeId) {
       </v-row>
     </div>
     <!-- Add Review Dialog -->
-<v-dialog v-model="dialog" persistent max-width="600px">
-  <v-card>
-    <v-card-title>
-      <span class="headline">Reviews</span>
-    </v-card-title>
-    <v-card-text>
-      <div v-if="existingReviews.length">
-        <v-row align="start">
-          <v-col
-            v-for="review in existingReviews"
-            :key="review.id"
-            cols="12"
-            class="mb-3"
-          >
-            <v-card class="ma-1 pa-2" outlined>
-              <v-card-text>
-                <div>
-                  <div class="font-weight-bold">Comments:</div>
-                  <div>{{ review.comments }}</div>
-                </div>
-                <div class="mt-1">
-                  <div class="font-weight-bold">Suggestions:</div>
-                  <div>{{ review.suggestions }}</div>
-                </div>
-              </v-card-text>
-              <v-card-actions>
-                <v-row>
-                  <v-col cols="12" sm="6" class="d-flex justify-start align-end pa-0">
-                    <span class="text-subtitle-2 text-grey">Created: {{ review.createdAt }}</span>
-                  </v-col>
-                  <v-col cols="12" sm="6" class="d-flex justify-end align-end pa-0">
-                    <span class="text-subtitle-2 text-grey">Reviewer: {{ review.reviewer_name }}</span>
-                  </v-col>
-                </v-row>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
-      </div>
-      <div v-else>
-        <p>No reviews available.</p>
-      </div>
-      <div class="mt-4">
-        <v-textarea v-model="reviewComments" label="New Comments" required></v-textarea>
-        <v-textarea v-model="reviewSuggestions" label="New Suggestions"></v-textarea>
-      </div>
-    </v-card-text>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn color="blue darken-1" text @click="closeReviewDialog">Cancel</v-btn>
-      <v-btn color="blue darken-1" text @click="submitReview">Submit</v-btn>
-    </v-card-actions>
-  </v-card>
-</v-dialog>
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Reviews</span>
+        </v-card-title>
+        <v-card-text>
+          <div v-if="existingReviews.length > 0">
+            <v-row align="start">
+              <v-col v-for="review in existingReviews" :key="review.id" cols="12" class="mb-3">
+                <v-card class="ma-1 pa-2" outlined>
+                  <v-card-text>
+                    <v-row>
+                      <v-col cols="12" class="font-weight-bold">Comments:</v-col>
+                      <v-col cols="12">{{ review.comments }}</v-col>
+                      <v-col cols="12" class="font-weight-bold">Suggestions:</v-col>
+                      <v-col cols="12">{{ review.suggestions }}</v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" sm="6" class="d-flex justify-sm-start justify-center pa-0">
+                        <span class="text-subtitle-2 text-grey">Created: {{ review.createdAt }}</span>
+                      </v-col>
+                      <v-col cols="12" sm="6" class="d-flex justify-sm-end justify-center pa-0">
+                        <span class="text-subtitle-2 text-grey">Reviewer: {{ review.reviewer_name }}</span>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </div>
+          <div v-else>
+            <p>No reviews available.</p>
+          </div>
+          <div class="mt-4">
+            <v-textarea v-model="reviewComments" label="New Comments" required></v-textarea>
+            <v-textarea v-model="reviewSuggestions" label="New Suggestions"></v-textarea>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="closeReviewDialog">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="submitReview">Submit</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <!-- Delete Confirmation Dialog -->
     <v-dialog v-model="showDeleteDialog" persistent max-width="400px">
@@ -326,5 +302,3 @@ async function fetchReviews(resumeId) {
     </v-snackbar>
   </v-container>
 </template>
-
-
