@@ -43,11 +43,9 @@
       </v-row>
 
       <v-row justify="center">
-
         <v-col cols="auto">
-          <v-btn size="x-large" class="mx-2" :to="{ name: 'certificate' }">User Certificates</v-btn>
+          <v-btn size="x-large" class="mx-2" :to="{ name: 'resumeHeader' }">Personal Information</v-btn>
         </v-col>
-
         <v-col cols="auto">
           <v-btn size="x-large" class="mx-2" :to="{ name: 'education' }">User Education</v-btn>
         </v-col>
@@ -59,10 +57,14 @@
         </v-col>
 
         <v-col cols="auto">
-          <v-btn size="x-large" class="mx-2" :to="{ name: 'project' }">User Projects</v-btn>
+          <v-btn size="x-large" class="mx-2" :to="{ name: 'certificate' }">User Certificates</v-btn>
         </v-col>
+
       </v-row>
       <v-row justify="center">
+        <v-col cols="auto">
+          <v-btn size="x-large" class="mx-2" :to="{ name: 'project' }">User Projects</v-btn>
+        </v-col>
 
         <v-col cols="auto">
           <v-btn size="x-large" class="mx-2" :to="{ name: 'skill' }">User Skills</v-btn>
