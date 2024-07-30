@@ -87,7 +87,6 @@ async function deleteExperience(item)
 }
 
 function openAdd() {
-  //newExperience.value.id = "";
   newExperience.value.employer = "";
   newExperience.value.job_title = "";
   newExperience.value.city = "";
