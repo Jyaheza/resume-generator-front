@@ -32,37 +32,51 @@ onMounted(async () => {
 });
 
 async function geteResumeHeader() {
-    await ResumeDataService.getResumeDatasByUserId(user.value.id)
-        .then((response) => {
-            resumeData.value = response.data[0];
-        })
+    const response = await ResumeDataService.getResumeDatasByUserId(user.value.id)
         .catch((error) => {
             console.log(error);
             snackbar.value.value = true;
             snackbar.value.color = "error";
             snackbar.value.text = error.response.data.message;
         });
+    if (response.data.length > 0) {
+        resumeData.value = response.data[0];
+    } else {
+        resumeData.value = {
+            full_name: "",
+            user_email: "",
+            user_phone_number: "",
+            location: "",
+            website_url: "",
+            summary: "",
+            user_id: user.value.id // Ensure the new data has the user ID
+        };
+    }
 }
 
-async function saveResumeData(id) {
+async function saveResumeData() {
     loading.value = true;
-    newResumeHeader.value = resumeData.value;
-    console.log(newResumeHeader.value);
-    await ResumeDataService.updateResumeData(id, newResumeHeader.value)
-        .then(() => {
+    try {
+        if (resumeData.value.id) {
+            await ResumeDataService.updateResumeData(resumeData.value.id, resumeData.value);
             snackbar.value.value = true;
             snackbar.value.color = "green";
-            snackbar.value.text = `Personal Info updated successfully!`;
-            loading.value = false;
-        })
-        .catch((error) => {
-            console.log(error);
+            snackbar.value.text = "Personal Info updated successfully!";
+        } else {
+            await ResumeDataService.addResumeData(resumeData.value);
             snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
-            loading.value = false;
-        });
-    await geteResumeHeader();
+            snackbar.value.color = "green";
+            snackbar.value.text = "Personal Info created successfully!";
+        }
+    } catch (error) {
+        console.log(error);
+        snackbar.value.value = true;
+        snackbar.value.color = "error";
+        snackbar.value.text = error.response.data.message;
+    } finally {
+        loading.value = false;
+        await geteResumeHeader();
+    }
 }
 
 function closeSnackBar() {
@@ -123,8 +137,7 @@ function closeSnackBar() {
                                         required></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6">
-                                    <v-textarea v-model="resumeData.summary" label="Summary"
-                                        required></v-textarea>
+                                    <v-textarea v-model="resumeData.summary" label="Summary" required></v-textarea>
                                 </v-col>
                             </v-row>
                         </v-card-text>
