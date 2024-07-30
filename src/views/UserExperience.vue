@@ -15,7 +15,6 @@ const snackbar = ref({
 });
 
 const newExperience = ref({
-  id: "",
   employer: "",
   job_title: "",
   city: "",
@@ -47,7 +46,7 @@ async function getExperiences() {
 async function addExperience() {
   isAdd.value = false;
   delete newExperience.id;
-  await ExperiencesServices.addExperience(newExperience.value)
+  await ExperiencesServices.addExperience(user.value.id,newExperience.value)
     .then(() => {
       snackbar.value.value = true;
       snackbar.value.color = "green";
@@ -64,7 +63,7 @@ async function addExperience() {
 
 async function updateExperience() {
   isEdit.value = false;
-  await ExperiencesServices.updateExperience(newExperience.value)
+  await ExperiencesServices.updateExperience(newExperience.value.id,newExperience.value)
     .then(() => {
       snackbar.value.value = true;
       snackbar.value.color = "green";
@@ -88,7 +87,6 @@ async function deleteExperience(item)
 }
 
 function openAdd() {
-  newExperience.value.id = "";
   newExperience.value.employer = "";
   newExperience.value.job_title = "";
   newExperience.value.city = "";
@@ -112,7 +110,7 @@ function openEdit(item) {
   newExperience.value.summary = item.summary;
   newExperience.value.start_year = item.start_year;
   newExperience.value.end_year = item.end_year;
-  //newExperience.value.user_id = item.user_id;
+  newExperience.value.user_id = user.value.id;
   isEdit.value = true;
 }
 
