@@ -68,6 +68,11 @@ const router = createRouter({
       name: "manageUsers",
       component: () => import("./views/ManageUsers.vue"),
     },
+    {
+      path: "/resumeHeader",
+      name: "resumeHeader",
+      component: () => import("./views/ResumeHeader.vue"),
+    }
   ],
 });
 

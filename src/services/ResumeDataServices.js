@@ -5,7 +5,7 @@ export default {
     return apiClient.get("resumedata");
   },
   getResumeDatasByUserId(userId) {
-    return apiClient.get(`resumedata/user/${userId}/`);
+    return apiClient.get(`resumedata/user/${userId}`);
   },
   getResumeData(id) {
     return apiClient.get(`resumedata/${id}`);
