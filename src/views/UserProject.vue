@@ -175,10 +175,24 @@ function closeSnackBar() {
             </v-card-title>
           </v-card-item>
           <v-card-text>
-            <v-text-field v-model="newProject.project_title" label="Employer" required></v-text-field>
-            <v-text-field v-model="newProject.location" label="Title" required></v-text-field>
-            <v-textarea v-model="newProject.summary" label="Summary" maxlength="120" counter single-line
-              required></v-textarea>
+            <v-text-field
+              v-model="newProject.project_title"
+              label="Project Title"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="newProject.location"
+              label="Title"
+              required
+            ></v-text-field>
+            <v-textarea
+              v-model="newProject.summary"
+              label="Summary"
+              maxlength="120"
+              counter
+              single-line
+              required
+            ></v-textarea>
             <v-row align="center" class="mb-4">
               <v-col cols="12" sm="6">
                 <v-text-field v-model="newProject.start_year" label="Start year" required></v-text-field>
