@@ -182,7 +182,7 @@ function closeSnackBar() {
           <v-card-text>
             <v-text-field
               v-model="newProject.project_title"
-              label="Employer"
+              label="Project Title"
               required
             ></v-text-field>
             <v-text-field
