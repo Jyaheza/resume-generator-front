@@ -93,14 +93,14 @@ const isMenuVisible = (menuItem) => {
 
     <v-divier></v-divier>
     <v-list density="compact" nav>
-      <v-list-item v-if="isMenuVisible('createResume')" prepend-icon="mdi-file-plus" title="Create Resume"
-        @click="router.push({ name: 'createResume' })"></v-list-item>
-      <v-list-item v-if="isMenuVisible('userCrud')" prepend-icon="mdi-file-edit" title="User Info"
-        @click="router.push({ name: 'userCrud' })"></v-list-item>
-      <v-list-item v-if="isMenuVisible('review')" prepend-icon="mdi-star" title="Review"
-        @click="router.push({ name: 'careerserviceshome' })"></v-list-item>
       <v-list-item v-if="isMenuVisible('home')" prepend-icon="mdi-home" title="Home"
         @click="redirectToHome()"></v-list-item>
+      <v-list-item v-if="isMenuVisible('createResume')" prepend-icon="mdi-file-plus" title="Create Resume"
+        @click="router.push({ name: 'createResume' })"></v-list-item>
+      <v-list-item v-if="isMenuVisible('userCrud')" prepend-icon="mdi-account-tie" title="Professional Profile"
+        @click="router.push({ name: 'userCrud' })"></v-list-item>
+      <v-list-item v-if="isMenuVisible('review')" prepend-icon="mdi-star" title="Review Resumes"
+        @click="router.push({ name: 'careerserviceshome' })"></v-list-item>
       <v-list-item v-if="isMenuVisible('manageUsers')" prepend-icon="mdi-account-multiple" title="Manage Users"
         @click="router.push({ name: 'manageUsers' })"></v-list-item>
       <v-list-item v-if="user" prepend-icon="mdi-logout" title="Logout" @click="logout()"></v-list-item>

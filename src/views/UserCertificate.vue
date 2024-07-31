@@ -151,25 +151,26 @@ function closeSnackBar() {
                         <v-col cols="2" class="bg-indigo-lighten-2"><strong>Actions</strong></v-col>
                     </v-row>
                     <v-row v-for="item in certificates" :key="item.id">
-                        <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right"><strong>Certificate
+                        <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Certificate
                                 Title</strong></v-col>
                         <v-col cols="8" md="4">{{ item.certificate_title }}</v-col>
 
-                        <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right"><strong>Issuer</strong></v-col>
+                        <v-col cols="4"
+                            class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Issuer</strong></v-col>
                         <v-col cols="8" md="2">{{ item.issuer }}</v-col>
 
-                        <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right"><strong>Issued
+                        <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Issued
                                 On</strong></v-col>
                         <v-col cols="8" md="2">{{ item.issue_date }}</v-col>
 
-                        <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right"><strong>Expires
+                        <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Expires
                                 On</strong></v-col>
                         <v-col cols="8" md="2">{{ item.expire_date }}</v-col>
 
                         <v-col cols="4"
                             class="bg-indigo-lighten-2 d-md-none text-right"><strong>Actions</strong></v-col>
                         <v-col cols="8" md="2">
-                            <v-icon size="small" icon="mdi-pencil" @click="openEdit(item)"></v-icon>
+                            <v-icon size="small" icon="mdi-pencil" class="mr-4" @click="openEdit(item)"></v-icon>
                             <v-icon size="large" icon="mdi-delete" @click="deleteCertificate(item)"></v-icon>
                         </v-col>
                         <v-divider class="d-block"></v-divider>
@@ -188,8 +189,7 @@ function closeSnackBar() {
                             required></v-text-field>
                         <v-text-field v-model="newCertificate.issuer" label="Issuer" required></v-text-field>
                         <v-text-field v-model="newCertificate.cert_url" label="Url" required></v-text-field>
-                        <v-textarea v-model="newCertificate.summary" label="Summary" maxlength="120" counter single-line
-                            required></v-textarea>
+                        <v-textarea v-model="newCertificate.summary" label="Summary" required></v-textarea>
                         <v-row align="center" class="mb-4">
                             <v-col cols="12" sm="6">
                                 <v-text-field v-model="newCertificate.issue_date" label="Issue Date"

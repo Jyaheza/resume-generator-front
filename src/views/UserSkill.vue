@@ -15,7 +15,7 @@ const snackbar = ref({
 });
 
 const newSkill = ref({
-    name: "",
+  name: "",
 });
 
 onMounted(async () => {
@@ -40,7 +40,7 @@ async function getSkills() {
 async function addSkill() {
   isAdd.value = false;
   delete newSkill.id;
-  await SkillsServices.addSkill(user.value.id,newSkill.value)
+  await SkillsServices.addSkill(user.value.id, newSkill.value)
     .then(() => {
       snackbar.value.value = true;
       snackbar.value.color = "green";
@@ -57,7 +57,7 @@ async function addSkill() {
 
 async function updateSkill() {
   isEdit.value = false;
-  await SkillsServices.updateSkill(newSkill.value.id,newSkill.value)
+  await SkillsServices.updateSkill(newSkill.value.id, newSkill.value)
     .then(() => {
       snackbar.value.value = true;
       snackbar.value.color = "green";
@@ -72,9 +72,8 @@ async function updateSkill() {
   await getSkills();
 }
 
-async function deleteSkill(item)
-{
-  if(confirm('Are you sure you want to delete ' + item.name)) {
+async function deleteSkill(item) {
+  if (confirm('Are you sure you want to delete ' + item.name)) {
     SkillsServices.deleteSkill(item.id);
   }
   await getSkills();
@@ -109,84 +108,60 @@ function closeSnackBar() {
   <v-container>
     <div id="body">
       <v-row align="center" class="mb-4">
-        <v-col cols="1"  sm="1">
-            <v-btn color="primary" icon to="/userCrud">
-                <v-icon>mdi-arrow-left</v-icon>
-            </v-btn>
+        <v-col cols="12" sm="2" class="d-flex justify-center justify-sm-start">
+          <v-btn color="primary" icon to="/userCrud">
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
         </v-col>
-        <v-col cols="12"  sm="4">
-        <v-card-title class="pl-0 text-h4 font-weight-bold">
-                Skills
-        </v-card-title>
+        <v-col cols="12" sm="6" class="text-center text-sm-start">
+          <v-card-title class="pl-0 text-h4 text-wrap font-weight-bold">
+            Skills
+          </v-card-title>
         </v-col>
-        <v-col class="d-flex justify-end" cols="12"  sm="7">
-          <v-btn v-if="user !== null" color="primary" @click="openAdd()"
-            >Add</v-btn
-          >
-        </v-col>
+        <v-row>
+          <v-col cols="12" class="d-flex justify-center justify-md-end">
+            <v-btn v-if="user !== null" color="primary" @click="openAdd()">Add</v-btn>
+          </v-col>
+        </v-row>
       </v-row>
+      <v-card class="rounded-lg elevation-5">
+        <v-card-text>
+          <v-row class="d-none d-md-flex">
+            <v-col cols="6" class="bg-indigo-lighten-2"><strong>Name</strong></v-col>
+            <v-col cols="6" class="bg-indigo-lighten-2"><strong>Actions</strong></v-col>
+          </v-row>
+          <v-row v-for="item in skills" :key="item.name">
+            <v-col cols="4" md="10" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Name</strong></v-col>
+            <v-col cols="8" md="6">{{ item.name }}</v-col>
 
-      <v-table class="rounded-lg elevation-5">
-        <thead>
-          <tr>
-            <th class="text-left">Name</th>
-
-            <th class="text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-        
-          <tr v-for="item in skills" :key="item.name">
-            <td>{{ item.name }}</td>
-            <td class="text-left">
-              <v-icon
-                size="small"
-                icon="mdi-pencil"
-                @click="openEdit(item)"
-              ></v-icon>
-              <v-icon
-                size="large"
-                icon="mdi-delete"
-                @click="deleteSkill(item)"
-              ></v-icon>
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
-
+            <v-col cols="4" md="2" class="bg-indigo-lighten-2 d-md-none text-right"><strong>Actions</strong></v-col>
+            <v-col cols="8" md="6">
+              <v-icon size="small" icon="mdi-pencil" class="mr-4" @click="openEdit(item)"></v-icon>
+              <v-icon size="large" icon="mdi-delete" @click="deleteSkill(item)"></v-icon>
+            </v-col>
+            <v-divider class="d-block"></v-divider>
+          </v-row>
+        </v-card-text>
+      </v-card>
       <v-dialog persistent :model-value="isAdd || isEdit" width="800">
         <v-card class="rounded-lg elevation-5">
           <v-card-item>
-            <v-card-title class="headline mb-2"
-              >{{ isAdd ? "Add Skill" : isEdit ? "Edit Skill" : "" }}
+            <v-card-title class="headline mb-2">{{ isAdd ? "Add Skill" : isEdit ? "Edit Skill" : "" }}
             </v-card-title>
           </v-card-item>
           <v-card-text>
-            <v-text-field
-              v-model="newSkill.name"
-              label="Name"
-              required
-            ></v-text-field>
-            
+            <v-text-field v-model="newSkill.name" label="Name" required></v-text-field>
+
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              variant="flat"
-              color="secondary"
-              @click="isAdd ? closeAdd() : isEdit ? closeEdit() : false"
-              >Close</v-btn
-            >
-            <v-btn
-              variant="flat"
-              color="primary"
-              @click="
-                isAdd ? addSkill() : isEdit ? updateSkill() : false
-              "
-              >{{
+            <v-btn variant="flat" color="secondary"
+              @click="isAdd ? closeAdd() : isEdit ? closeEdit() : false">Close</v-btn>
+            <v-btn variant="flat" color="primary" @click="
+              isAdd ? addSkill() : isEdit ? updateSkill() : false
+              ">{{
                 isAdd ? "Add Skill" : isEdit ? "Update Skill" : ""
-              }}</v-btn
-            >
+              }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -194,11 +169,7 @@ function closeSnackBar() {
         {{ snackbar.text }}
 
         <template v-slot:actions>
-          <v-btn
-            :color="snackbar.color"
-            variant="text"
-            @click="closeSnackBar()"
-          >
+          <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
             Close
           </v-btn>
         </template>
