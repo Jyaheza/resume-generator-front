@@ -155,7 +155,8 @@ function closeSnackBar() {
                                 Title</strong></v-col>
                         <v-col cols="8" md="4">{{ item.certificate_title }}</v-col>
 
-                        <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Issuer</strong></v-col>
+                        <v-col cols="4"
+                            class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Issuer</strong></v-col>
                         <v-col cols="8" md="2">{{ item.issuer }}</v-col>
 
                         <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Issued
@@ -188,8 +189,7 @@ function closeSnackBar() {
                             required></v-text-field>
                         <v-text-field v-model="newCertificate.issuer" label="Issuer" required></v-text-field>
                         <v-text-field v-model="newCertificate.cert_url" label="Url" required></v-text-field>
-                        <v-textarea v-model="newCertificate.summary" label="Summary" maxlength="120" counter single-line
-                            required></v-textarea>
+                        <v-textarea v-model="newCertificate.summary" label="Summary" required></v-textarea>
                         <v-row align="center" class="mb-4">
                             <v-col cols="12" sm="6">
                                 <v-text-field v-model="newCertificate.issue_date" label="Issue Date"

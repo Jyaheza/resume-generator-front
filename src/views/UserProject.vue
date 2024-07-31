@@ -160,7 +160,7 @@ function closeSnackBar() {
 
             <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Actions</strong></v-col>
             <v-col cols="8" md="2">
-              <v-icon size="small" icon="mdi-pencil" @click="openEdit(item)"></v-icon>
+              <v-icon size="small" icon="mdi-pencil" class="mr-4" @click="openEdit(item)"></v-icon>
               <v-icon size="large" icon="mdi-delete" @click="deleteProject(item)"></v-icon>
             </v-col>
             <v-divider class="d-block"></v-divider>
@@ -182,7 +182,7 @@ function closeSnackBar() {
             ></v-text-field>
             <v-text-field
               v-model="newProject.location"
-              label="Title"
+              label="Location"
               required
             ></v-text-field>
             <v-textarea
@@ -190,7 +190,6 @@ function closeSnackBar() {
               label="Summary"
               maxlength="120"
               counter
-              single-line
               required
             ></v-textarea>
             <v-row align="center" class="mb-4">

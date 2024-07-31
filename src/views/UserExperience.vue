@@ -152,20 +152,20 @@ function closeSnackBar() {
             <v-col cols="2" class="bg-indigo-lighten-2"><strong>Actions</strong></v-col>
           </v-row>
           <v-row v-for="item in experiences" :key="item.employer">
-            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Employer</strong></v-col>
-            <v-col cols="8" md="3">{{ item.employer }}</v-col>
+            <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Employer</strong></v-col>
+            <v-col cols="9" md="3">{{ item.employer }}</v-col>
 
-            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Job Title</strong></v-col>
-            <v-col cols="8" md="3">{{ item.job_title }}</v-col>
+            <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Job Title</strong></v-col>
+            <v-col cols="9" md="3">{{ item.job_title }}</v-col>
 
-            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Start Date</strong></v-col>
-            <v-col cols="8" md="2">{{ item.start_year }}</v-col>
+            <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Start Date</strong></v-col>
+            <v-col cols="9" md="2">{{ item.start_year }}</v-col>
 
-            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>End Date</strong></v-col>
-            <v-col cols="8" md="2">{{ item.end_year }}</v-col>
+            <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>End Date</strong></v-col>
+            <v-col cols="9" md="2">{{ item.end_year }}</v-col>
 
-            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right"><strong>Actions</strong></v-col>
-            <v-col cols="8" md="2">
+            <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right"><strong>Actions</strong></v-col>
+            <v-col cols="9" md="2">
               <v-icon size="small" icon="mdi-pencil" class="mr-4" @click="openEdit(item)"></v-icon>
               <v-icon size="large" icon="mdi-delete" @click="deleteExperience(item)"></v-icon>
             </v-col>
@@ -184,7 +184,7 @@ function closeSnackBar() {
             <v-text-field v-model="newExperience.job_title" label="Title" required></v-text-field>
             <v-text-field v-model="newExperience.city" label="City" required></v-text-field>
             <v-text-field v-model="newExperience.state" label="State" required></v-text-field>
-            <v-textarea v-model="newExperience.summary" label="Summary" maxlength="120" counter single-line
+            <v-textarea v-model="newExperience.summary" label="Summary"
               required></v-textarea>
             <v-row align="center" class="mb-4">
               <v-col cols="12" sm="6">
