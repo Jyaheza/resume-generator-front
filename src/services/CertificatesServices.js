@@ -10,8 +10,8 @@ export default {
   getCertificate(id) {
     return apiClient.get(`certificates/${id}`);
   },
-  addCertificate(userId, certificateParams) {
-    return apiClient.post(`certificates/${userId}`,certificateParams);
+  addCertificate(certificateParams) {
+    return apiClient.post(`certificates`,certificateParams);
   },
   updateCertificate(certificateId, certificate) {
     return apiClient.put(`certificates/${certificateId}`, certificate);
