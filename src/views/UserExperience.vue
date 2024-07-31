@@ -50,7 +50,7 @@ async function addExperience() {
     .then(() => {
       snackbar.value.value = true;
       snackbar.value.color = "green";
-      snackbar.value.text = `${newExperience.value.name} added successfully!`;
+      snackbar.value.text = `${newExperience.value.job_title} added successfully!`;
     })
     .catch((error) => {
       console.log(error);
@@ -67,7 +67,7 @@ async function updateExperience() {
     .then(() => {
       snackbar.value.value = true;
       snackbar.value.color = "green";
-      snackbar.value.text = `${newExperience.name} updated successfully!`;
+      snackbar.value.text = `${newExperience.value.job_title} updated successfully!`;
     })
     .catch((error) => {
       console.log(error);
