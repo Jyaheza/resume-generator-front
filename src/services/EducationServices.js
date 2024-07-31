@@ -10,13 +10,13 @@ export default {
   getEducation(id) {
     return apiClient.get(`education/${id}`);
   },
-  addEducation(userId, educationParams) {
-    return apiClient.post(`education/${userId}`,educationParams);
+  addEducation(educationParams) {
+    return apiClient.post("education" ,educationParams);
   },
   updateEducation(educationId, education) {
     return apiClient.put(`education/${educationId}`, education);
   },
-  deleteEducation( educationId) {
+  deleteEducation(educationId) {
     return apiClient.delete(`education/${educationId}`);
   },
 };
