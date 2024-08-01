@@ -35,8 +35,8 @@ jobs:
       - name: Copy .htaccess file
         uses: appleboy/ssh-action@v0.1.2
         with:
-          host: ec2-3-17-175-207.us-east-2.compute.amazonaws.com
-          username: ubuntu
+          host: "ec2-3-17-175-207.us-east-2.compute.amazonaws.com"
+          username: "ubuntu"
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             sudo cp /var/www/.htaccess /var/www/html/.htaccess
