@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch, computed } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import ResumeServices from "../services/ResumeServices";
 import ReviewServices from "../services/ReviewServices";
@@ -43,24 +43,45 @@ async function setResumeData() {
   }
 }
 
-function openResumePdf(resumeId) {
-  ResumeServices.getResumePdf(resumeId)
-    .then((response) => {
-      const pdfResponse = response.data;
-      const uint8Array = new Uint8Array(pdfResponse);
-      const b64String = btoa(
-        uint8Array.reduce((data, byte) => data + String.fromCharCode(byte), "")
-      );
-      const blob = b64toBlob(b64String, "application/pdf");
-      const blobUrl = URL.createObjectURL(blob);
-      window.open(blobUrl, "_blank");
-    })
-    .catch((error) => {
-      console.error("Error opening PDF:", error);
+async function openResumePdf(resumeId) {
+  let pdfResponse, uint8Array, b64String, blob, blobUrl;
+
+  try {
+    pdfResponse = await ResumeServices.getResumePdf(resumeId);
+
+    // Convert array of numbers to Uint8Array
+    uint8Array = new Uint8Array(pdfResponse.data.pdf.data);
+
+    // Convert Uint8Array to b64 string
+    b64String = '';
+    uint8Array.forEach((byte) => {
+      b64String += String.fromCharCode(byte);
     });
+
+    // Create Blob from base64 string
+    blob = b64toBlob(b64String, 'application/pdf');
+
+    // Create a temporary URL for the Blob
+    blobUrl = URL.createObjectURL(blob);
+
+    // Open PDF in a new tab
+    window.open(blobUrl, '_blank');
+
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 2000);
+  } catch (error) {
+    console.error('Error opening PDF:', error);
+  } finally {
+    pdfResponse = null;
+    uint8Array = null;
+    b64String = null;
+    blob = null;
+    blobUrl = null;
+  }
 }
 
-function b64toBlob(base64Data, contentType = "", sliceSize = 512) {
+function b64toBlob(base64Data, contentType = '', sliceSize = 512) {
   const byteCharacters = atob(base64Data);
   const byteArrays = [];
 
@@ -79,7 +100,6 @@ function b64toBlob(base64Data, contentType = "", sliceSize = 512) {
   const blob = new Blob(byteArrays, { type: contentType });
   return blob;
 }
-
 
 function deleteResumePrompt(resumeId) {
   showDeleteDialog.value = true;
@@ -186,15 +206,12 @@ async function fetchReviews(resumeId) {
                             <div class="d-flex justify-center justify-sm-start">
                               <span class="text-h6">{{ resume.full_name ? resume.full_name : " [Name Missing]" }}</span>
                             </div>
+                            <div class="d-flex justify-center justify-sm-start">
+                              <span class="text-h6">Title: {{ resume.title ? resume.title : " [No Title]"
+                                }}</span>
+                            </div>
                             <div class="p-2 d-flex justify-center justify-sm-start">
                               <v-btn @click="openResumePdf(resume.resume_id)" color="primary">View PDF</v-btn>
-                            </div>
-                          </v-col>
-                          <v-spacer></v-spacer>
-                          <v-col cols="12" sm="auto">
-                            <div class="d-flex justify-center justify-sm-start">
-                              <div style="position: relative; width: 175px; height: 115px;">
-                              </div>
                             </div>
                           </v-col>
                         </v-row>
@@ -236,70 +253,56 @@ async function fetchReviews(resumeId) {
     </div>
     <!-- Add Review Dialog -->
     <v-dialog v-model="dialog" persistent max-width="600px">
-  <v-card>
-    <v-card-title class="headline">
-      Reviews
-    </v-card-title>
-    <v-card-text>
-      <div v-if="existingReviews.length">
-        <v-divider class="mb-4"></v-divider>
-        <v-row align="start">
-          <v-col
-            v-for="review in existingReviews"
-            :key="review.id"
-            cols="12"
-            class="mb-3"
-          >
-            <v-card class="ma-1 pa-3" outlined elevation="2" rounded="lg">
-              <v-card-title class="d-flex align-center font-weight-bold">
-                <v-icon left color="primary">mdi-account-circle</v-icon>
-                 {{ review.reviewer_name }}
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                <div class="mt-3">
-                  <div class="font-weight-bold">Comments:</div>
-                  <div>{{ review.comments }}</div>
-                </div>
-                <div class="mt-3"> 
-                  <div class="font-weight-bold">Suggestions:</div>
-                  <div>{{ review.suggestions }}</div>
-                </div>
-              </v-card-text>
-              <v-card-actions class="d-flex justify-between pa-0">
-                <span class="text-subtitle-2 text-grey">Created: {{ review.createdAt }}</span>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
-      </div>
-      <div v-else>
-        <p>No reviews available.</p>
-      </div>
-      <v-divider class="my-4"></v-divider>
-      <div>
-        <v-textarea
-          v-model="reviewComments"
-          label="New Comments"
-          required
-          outlined
-          prepend-inner-icon="mdi-comment"
-        ></v-textarea>
-        <v-textarea
-          v-model="reviewSuggestions"
-          label="New Suggestions"
-          outlined
-          prepend-inner-icon="mdi-lightbulb"
-        ></v-textarea>
-      </div>
-    </v-card-text>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn color="red darken-1" text @click="closeReviewDialog">Cancel</v-btn>
-      <v-btn color="primary" text @click="submitReview">Submit</v-btn>
-    </v-card-actions>
-  </v-card>
-</v-dialog>
+      <v-card>
+        <v-card-title class="headline">
+          Reviews
+        </v-card-title>
+        <v-card-text>
+          <div v-if="existingReviews.length">
+            <v-divider class="mb-4"></v-divider>
+            <v-row align="start">
+              <v-col v-for="review in existingReviews" :key="review.id" cols="12" class="mb-3">
+                <v-card class="ma-1 pa-3" outlined elevation="2" rounded="lg">
+                  <v-card-title class="d-flex align-center font-weight-bold">
+                    <v-icon left color="primary">mdi-account-circle</v-icon>
+                    {{ review.reviewer_name }}
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-card-text>
+                    <div class="mt-3">
+                      <div class="font-weight-bold">Comments:</div>
+                      <div>{{ review.comments }}</div>
+                    </div>
+                    <div class="mt-3">
+                      <div class="font-weight-bold">Suggestions:</div>
+                      <div>{{ review.suggestions }}</div>
+                    </div>
+                  </v-card-text>
+                  <v-card-actions class="d-flex justify-between pa-0">
+                    <span class="text-subtitle-2 text-grey">Created: {{ review.createdAt }}</span>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
+          </div>
+          <div v-else>
+            <p>No reviews available.</p>
+          </div>
+          <v-divider class="my-4"></v-divider>
+          <div>
+            <v-textarea v-model="reviewComments" label="New Comments" required outlined
+              prepend-inner-icon="mdi-comment"></v-textarea>
+            <v-textarea v-model="reviewSuggestions" label="New Suggestions" outlined
+              prepend-inner-icon="mdi-lightbulb"></v-textarea>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" text @click="closeReviewDialog">Cancel</v-btn>
+          <v-btn color="primary" text @click="submitReview">Submit</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <!-- Delete Confirmation Dialog -->
     <v-dialog v-model="showDeleteDialog" persistent max-width="400px">
@@ -308,8 +311,8 @@ async function fetchReviews(resumeId) {
         <v-card-text>Are you sure you want to delete this resume?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1"  @click="showDeleteDialog = false">Cancel</v-btn>
-          <v-btn color="blue darken-1"  @click="deleteResume(resumeToDelete)">Delete</v-btn>
+          <v-btn color="blue darken-1" @click="showDeleteDialog = false">Cancel</v-btn>
+          <v-btn color="blue darken-1" @click="deleteResume(resumeToDelete)">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
