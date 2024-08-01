@@ -240,10 +240,7 @@ async function fetchReviews(resumeId) {
             <v-container>
               <v-row>
                 <v-col cols="12 d-flex justify-center align-center">
-                  <span class="text-h5">No Resumes Found...</span>
-                </v-col>
-                <v-col cols="12 d-flex justify-center align-center">
-                  <v-btn @click="router.push({ name: 'createResume' });" color="primary">Generate A Resume</v-btn>
+                  <span class="text-h5">There are no student resumes being shared at this time.</span>
                 </v-col>
               </v-row>
             </v-container>
