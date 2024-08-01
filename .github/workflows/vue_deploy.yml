@@ -33,7 +33,7 @@ jobs:
           TARGET: "/var/www/html"
 
       - name: Copy .htaccess file
-        uses: garygrossgarten/github-action-ssh@v0.4.2
+        uses: garygrossgarten/github-action-ssh@release
         with:
           command: "sudo cp /var/www/.htaccess /var/www/html/.htaccess"
           host: "ec2-3-17-175-207.us-east-2.compute.amazonaws.com"
