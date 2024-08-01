@@ -32,6 +32,11 @@ jobs:
           REMOTE_HOST: "ec2-3-17-175-207.us-east-2.compute.amazonaws.com"
           REMOTE_USER: ubuntu
           TARGET: "/var/www/html"
+          SCRIPT_BEFORE: |
+            whoami
+            ls -al
           SCRIPT_AFTER: | 
+            whoami
+            ls -al
             cp /var/www/.htaccess /var/www/html
-          SCRIPT_AFTER_REQUIRED: true 
+            echo $RSYNC_STDOUT
