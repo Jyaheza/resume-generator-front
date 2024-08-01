@@ -35,4 +35,4 @@ jobs:
           REMOTE_USER: ubuntu
           TARGET: "/var/www/html"
       
-      -run: - run: cp /var/www/.htaccess /var/www/html
+      - run: cp /var/www/.htaccess /var/www/html
