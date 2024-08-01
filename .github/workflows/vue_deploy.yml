@@ -34,3 +34,4 @@ jobs:
           TARGET: "/var/www/html"
           SCRIPT_AFTER: | 
             cp /var/www/.htaccess /var/www/html
+          SCRIPT_AFTER_REQUIRED: true 
