@@ -1,6 +1,6 @@
 name: AWS DEPLOY TO STAGING
 
-#turn off deploy to AWS
+# Turn off deploy to AWS
 on:
   pull_request:
     types: [closed]
@@ -10,7 +10,6 @@ on:
 jobs:
   aws-deploy:
     runs-on: ubuntu-latest
-    #For google auth
 
     steps:
       - uses: actions/checkout@v3
@@ -32,3 +31,12 @@ jobs:
           REMOTE_HOST: "ec2-3-17-175-207.us-east-2.compute.amazonaws.com"
           REMOTE_USER: ubuntu
           TARGET: "/var/www/html"
+
+      - name: Copy .htaccess file
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ec2-3-17-175-207.us-east-2.compute.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            sudo cp /var/www/.htaccess /var/www/html/.htaccess
