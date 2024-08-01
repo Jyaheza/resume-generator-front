@@ -141,11 +141,11 @@ function closeEdit() {
                 <!-- User rows -->
                 <v-row v-for="item in users" :key="item.id">
                     <!-- Header for small screens -->
-                    <v-col cols="4" class="bg-indigo-lighten-2 d-sm-none text-right"><strong>Name </strong></v-col>
+                    <v-col cols="4" class="bg-indigo-lighten-2 d-sm-none text-right border-b-sm"><strong>Name </strong></v-col>
                     <v-col cols="8" sm="4">{{ item.firstName }} {{ item.lastName }}</v-col>
 
                     <!-- Header for small screens -->
-                    <v-col cols="4" class="bg-indigo-lighten-2 d-sm-none text-right"><strong>Role </strong></v-col>
+                    <v-col cols="4" class="bg-indigo-lighten-2 d-sm-none text-right border-b-sm"><strong>Role </strong></v-col>
                     <v-col cols="8" sm="2">
                         {{ item.role }}
                         <v-menu transition="scale-transition">
@@ -161,12 +161,12 @@ function closeEdit() {
                     </v-col>
 
                     <!-- Header for small screens -->
-                    <v-col cols="4" class="bg-indigo-lighten-2 d-sm-none text-right"><strong>Email</strong></v-col>
+                    <v-col cols="4" class="bg-indigo-lighten-2 d-sm-none text-right border-b-sm"><strong>Email</strong></v-col>
                     <v-col cols="8" sm="4">{{ item.email }}</v-col>
                     <!-- Header for small screens -->
-                    <v-col cols="4" class="bg-indigo-lighten-2 d-sm-none text-right"><strong>Actions</strong></v-col>
+                    <v-col cols="4" class="bg-indigo-lighten-2 d-sm-none text-right border-b-sm"><strong>Actions</strong></v-col>
                     <v-col cols="8" sm="2">
-                        <v-icon icon="mdi-pencil" size="small" variant="flat" @click="editUser(item)"></v-icon>
+                        <v-icon icon="mdi-pencil" size="small" variant="flat" class="mr-4" @click="editUser(item)"></v-icon>
                         <v-icon icon="mdi-delete" size="small" variant="flat" @click="deleteUser(item)" />
                     </v-col>
                     <v-divider class="d-block"></v-divider>
