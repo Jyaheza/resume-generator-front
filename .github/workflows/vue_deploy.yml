@@ -32,7 +32,5 @@ jobs:
           REMOTE_HOST: "ec2-3-17-175-207.us-east-2.compute.amazonaws.com"
           REMOTE_USER: ubuntu
           TARGET: "/var/www/html"
-      
-      - name: Restore .htaccess
-        run: |
-          ssh -i ${{ secrets.SERVER_SSH_KEY }} ubuntu@ec2-3-17-175-207.us-east-2.compute.amazonaws.com "sudo cp /var/www/.htaccess /var/www/html/"
+          SCRIPT_AFTER: | 
+            cp /var/www/.htaccess /var/www/html
