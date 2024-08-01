@@ -14,6 +14,8 @@ const snackbar = ref({
     text: "",
 });
 
+const loading = ref(true);
+
 const newCertificate = ref({
     certificate_title: "",
     issuer: "",
@@ -30,22 +32,25 @@ onMounted(async () => {
 });
 
 async function getCertificates() {
+    loading.value = true;
     await CertificatesServices.getCertificatesByUserId(user.value.id)
         .then((response) => {
             certificates.value = response.data;
+            loading.value = false;
         })
         .catch((error) => {
             console.log(error);
             snackbar.value.value = true;
             snackbar.value.color = "error";
             snackbar.value.text = error.response.data.message;
+            loading.value = false;
         });
 }
 
 async function addCertificate() {
+    loading.value = true;
     isAdd.value = false;
     newCertificate.value.user_id = user.value.id;
-    // delete newCertificate.id;
     await CertificatesServices.addCertificate(newCertificate.value)
         .then(() => {
             snackbar.value.value = true;
@@ -57,11 +62,13 @@ async function addCertificate() {
             snackbar.value.value = true;
             snackbar.value.color = "error";
             snackbar.value.text = error.response.data.message;
+            loading.value = false;
         });
     await getCertificates();
 }
 
 async function updateCertificate() {
+    loading.value = true;
     isEdit.value = false;
     await CertificatesServices.updateCertificate(newCertificate.value.id, newCertificate.value)
         .then(() => {
@@ -74,13 +81,15 @@ async function updateCertificate() {
             snackbar.value.value = true;
             snackbar.value.color = "error";
             snackbar.value.text = error.response.data.message;
+            loading.value = false;
         });
     await getCertificates();
 }
 
 async function deleteCertificate(item) {
     if (confirm('Are you sure you want to delete ' + item.certificate_title)) {
-        CertificatesServices.deleteCertificate(item.id);
+        loading.value = true;
+        await CertificatesServices.deleteCertificate(item.id);
     }
     await getCertificates();
 }
@@ -122,6 +131,9 @@ function closeSnackBar() {
 </script>
 
 <template>
+    <v-overlay :model-value="loading" contained persistent class="align-center justify-center">
+        <v-progress-circular :size="70" :width="7" color="primary" indeterminate></v-progress-circular>
+    </v-overlay>
     <v-container>
         <div id="body">
             <v-row align="center">
