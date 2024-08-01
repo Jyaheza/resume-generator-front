@@ -101,6 +101,7 @@ function openEdit(item) {
 }
 
 async function updateEducation() {
+  loading.value = true;
   isEdit.value = false;
   newEd.value.user_id = user.value.id;
   await EducationServices.updateEducation(newEd.value.id, newEd.value)
@@ -114,6 +115,7 @@ async function updateEducation() {
       snackbar.value.value = true;
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
+      loading.value = false;
     });
   await getEducation();
 }
