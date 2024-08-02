@@ -14,6 +14,8 @@ const snackbar = ref({
   text: "",
 });
 
+const loading = ref(true);
+
 const newProject = ref({
   project_title: "",
   location: "",
@@ -28,20 +30,23 @@ onMounted(async () => {
 });
 
 async function getProjects() {
+  loading.value = true;
   await ProjectsServices.getProjectsByUserId(user.value.id)
     .then((response) => {
       projects.value = response.data;
-      console.log(projects)
+      loading.value = false;
     })
     .catch((error) => {
       console.log(error);
       snackbar.value.value = true;
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
+      loading.value = false;
     });
 }
 
 async function addProject() {
+  loading.value = true;
   isAdd.value = false;
   delete newProject.id;
   await ProjectsServices.addProject(user.value.id, newProject.value)
@@ -55,11 +60,13 @@ async function addProject() {
       snackbar.value.value = true;
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
+      loading.value = false;
     });
   await getProjects();
 }
 
 async function updateProject() {
+  loading.value = true;
   isEdit.value = false;
   await ProjectsServices.updateProject(newProject.value.id, newProject.value)
     .then(() => {
@@ -72,13 +79,15 @@ async function updateProject() {
       snackbar.value.value = true;
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
+      loading.value = false;
     });
   await getProjects();
 }
 
 async function deleteProject(item) {
   if (confirm('Are you sure you want to delete ' + item.project_title)) {
-    ProjectsServices.deleteProject(item.id);
+    loading.value = true;
+    await ProjectsServices.deleteProject(item.id);
   }
   await getProjects();
 }
@@ -117,6 +126,9 @@ function closeSnackBar() {
 </script>
 
 <template>
+  <v-overlay :model-value="loading" contained persistent class="align-center justify-center">
+    <v-progress-circular :size="70" :width="7" color="primary" indeterminate></v-progress-circular>
+  </v-overlay>
   <v-container>
     <div id="body">
       <v-row align="center" class="mb-4">
@@ -136,7 +148,7 @@ function closeSnackBar() {
           </v-col>
         </v-row>
       </v-row>
-      <v-card class="rounded-lg elevation-5">
+      <v-card v-if="!loading && projects.length > 0" class="rounded-lg elevation-5">
         <v-card-text>
           <v-row class="d-none d-md-flex">
             <v-col cols="3" class="bg-indigo-lighten-2"><strong>Project Title</strong></v-col>
@@ -146,19 +158,24 @@ function closeSnackBar() {
             <v-col cols="2" class="bg-indigo-lighten-2"><strong>Actions</strong></v-col>
           </v-row>
           <v-row v-for="item in projects" :key="item.project_title">
-            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Project Title</strong></v-col>
+            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Project
+                Title</strong></v-col>
             <v-col cols="8" md="3">{{ item.project_title }}</v-col>
 
-            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Location</strong></v-col>
+            <v-col cols="4"
+              class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Location</strong></v-col>
             <v-col cols="8" md="3">{{ item.location }}</v-col>
 
-            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Start Date</strong></v-col>
+            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Start
+                Date</strong></v-col>
             <v-col cols="8" md="2">{{ item.start_year }}</v-col>
 
-            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm "><strong>End Date</strong></v-col>
+            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm "><strong>End
+                Date</strong></v-col>
             <v-col cols="8" md="2">{{ item.end_year }}</v-col>
 
-            <v-col cols="4" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Actions</strong></v-col>
+            <v-col cols="4"
+              class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Actions</strong></v-col>
             <v-col cols="8" md="2">
               <v-icon size="small" icon="mdi-pencil" class="mr-4" @click="openEdit(item)"></v-icon>
               <v-icon size="large" icon="mdi-delete" @click="deleteProject(item)"></v-icon>
@@ -167,7 +184,9 @@ function closeSnackBar() {
           </v-row>
         </v-card-text>
       </v-card>
-
+      <v-col v-else-if="!loading && projects.length === 0" class="text-h5 text-center">
+        <span>Add Projects to your profile.</span>
+      </v-col>
       <v-dialog persistent :model-value="isAdd || isEdit" width="800">
         <v-card class="rounded-lg elevation-5">
           <v-card-item>
@@ -175,23 +194,9 @@ function closeSnackBar() {
             </v-card-title>
           </v-card-item>
           <v-card-text>
-            <v-text-field
-              v-model="newProject.project_title"
-              label="Project Title"
-              required
-            ></v-text-field>
-            <v-text-field
-              v-model="newProject.location"
-              label="Location"
-              required
-            ></v-text-field>
-            <v-textarea
-              v-model="newProject.summary"
-              label="Summary"
-              maxlength="120"
-              counter
-              required
-            ></v-textarea>
+            <v-text-field v-model="newProject.project_title" label="Project Title" required></v-text-field>
+            <v-text-field v-model="newProject.location" label="Location" required></v-text-field>
+            <v-textarea v-model="newProject.summary" label="Summary" maxlength="120" counter required></v-textarea>
             <v-row align="center" class="mb-4">
               <v-col cols="12" sm="6">
                 <v-text-field v-model="newProject.start_year" label="Start year" required></v-text-field>

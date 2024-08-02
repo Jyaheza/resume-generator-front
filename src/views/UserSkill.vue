@@ -14,6 +14,8 @@ const snackbar = ref({
   text: "",
 });
 
+const loading = ref(true);
+
 const newSkill = ref({
   name: "",
 });
@@ -24,20 +26,23 @@ onMounted(async () => {
 });
 
 async function getSkills() {
+  loading.value = true;
   await SkillsServices.getSkillsByUserId(user.value.id)
     .then((response) => {
       skills.value = response.data;
-      console.log(skills)
+      loading.value = false;
     })
     .catch((error) => {
       console.log(error);
       snackbar.value.value = true;
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
+      loading.value = false;
     });
 }
 
 async function addSkill() {
+  loading.value = true;
   isAdd.value = false;
   delete newSkill.id;
   await SkillsServices.addSkill(user.value.id, newSkill.value)
@@ -51,11 +56,13 @@ async function addSkill() {
       snackbar.value.value = true;
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
+      loading.value = false;
     });
   await getSkills();
 }
 
 async function updateSkill() {
+  loading.value = true;
   isEdit.value = false;
   await SkillsServices.updateSkill(newSkill.value.id, newSkill.value)
     .then(() => {
@@ -68,13 +75,15 @@ async function updateSkill() {
       snackbar.value.value = true;
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
+      loading.value = false;
     });
   await getSkills();
 }
 
 async function deleteSkill(item) {
   if (confirm('Are you sure you want to delete ' + item.name)) {
-    SkillsServices.deleteSkill(item.id);
+    loading.value = true;
+    await SkillsServices.deleteSkill(item.id);
   }
   await getSkills();
 }
@@ -105,6 +114,9 @@ function closeSnackBar() {
 </script>
 
 <template>
+  <v-overlay :model-value="loading" contained persistent class="align-center justify-center">
+    <v-progress-circular :size="70" :width="7" color="primary" indeterminate></v-progress-circular>
+  </v-overlay>
   <v-container>
     <div id="body">
       <v-row align="center" class="mb-4">
@@ -124,14 +136,15 @@ function closeSnackBar() {
           </v-col>
         </v-row>
       </v-row>
-      <v-card class="rounded-lg elevation-5">
+      <v-card v-if="!loading && skills.length > 0" class="rounded-lg elevation-5">
         <v-card-text>
           <v-row class="d-none d-md-flex">
             <v-col cols="6" class="bg-indigo-lighten-2"><strong>Name</strong></v-col>
             <v-col cols="6" class="bg-indigo-lighten-2"><strong>Actions</strong></v-col>
           </v-row>
           <v-row v-for="item in skills" :key="item.name">
-            <v-col cols="4" md="10" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Name</strong></v-col>
+            <v-col cols="4" md="10"
+              class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Name</strong></v-col>
             <v-col cols="8" md="6">{{ item.name }}</v-col>
 
             <v-col cols="4" md="2" class="bg-indigo-lighten-2 d-md-none text-right"><strong>Actions</strong></v-col>
@@ -143,6 +156,9 @@ function closeSnackBar() {
           </v-row>
         </v-card-text>
       </v-card>
+      <v-col v-else-if="!loading && skills.length === 0" class="text-h5 text-center">
+        <span>Add Skills to your profile.</span>
+      </v-col>
       <v-dialog persistent :model-value="isAdd || isEdit" width="800">
         <v-card class="rounded-lg elevation-5">
           <v-card-item>

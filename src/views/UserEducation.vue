@@ -15,6 +15,8 @@ const snackbar = ref({
   text: "",
 });
 
+const loading = ref(true);
+
 const newEd = ref({
   education_name: "",
   location: "",
@@ -33,15 +35,18 @@ onMounted(async () => {
 });
 
 async function getEducation() {
+  loading.value = true;
   await EducationServices.getEducationsByUserId(user.value.id)
     .then((response) => {
       educations.value = response.data;
+      loading.value = false;
     })
     .catch((error) => {
       console.log(error);
       snackbar.value.value = true;
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
+      loading.value = false;
     });
 }
 
@@ -59,6 +64,7 @@ function openAdd() {
 
 
 async function addEducation() {
+  loading.value = true;
   isAdd.value = false;
   newEd.value.user_id = user.value.id;
   await EducationServices.addEducation(newEd.value)
@@ -72,6 +78,7 @@ async function addEducation() {
       snackbar.value.value = true;
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
+      loading.value = false;
     });
   await getEducation();
 }
@@ -94,6 +101,7 @@ function openEdit(item) {
 }
 
 async function updateEducation() {
+  loading.value = true;
   isEdit.value = false;
   newEd.value.user_id = user.value.id;
   await EducationServices.updateEducation(newEd.value.id, newEd.value)
@@ -107,6 +115,7 @@ async function updateEducation() {
       snackbar.value.value = true;
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
+      loading.value = false;
     });
   await getEducation();
 }
@@ -117,13 +126,17 @@ function closeEdit() {
 
 async function deleteEducation(item) {
   if (confirm('Are you sure you want to delete ' + item.education_name)) {
-    EducationServices.deleteEducation(item.id);
+    loading.value = true;
+    await EducationServices.deleteEducation(item.id);
   }
   await getEducation();
 }
 </script>
 
 <template>
+  <v-overlay :model-value="loading" contained persistent class="align-center justify-center">
+    <v-progress-circular :size="70" :width="7" color="primary" indeterminate></v-progress-circular>
+  </v-overlay>
   <v-container>
     <div id="body">
       <v-row align="center" class="mb-4">
@@ -143,7 +156,7 @@ async function deleteEducation(item) {
           </v-col>
         </v-row>
       </v-row>
-      <v-card class="rounded-lg elevation-5">
+      <v-card v-if="!loading && educations.length > 0" class="rounded-lg elevation-5">
         <v-card-text>
           <v-row class="d-none d-md-flex">
             <v-col cols="3" class="bg-indigo-lighten-2"><strong>University</strong></v-col>
@@ -153,19 +166,23 @@ async function deleteEducation(item) {
             <v-col cols="2" class="bg-indigo-lighten-2"><strong>Actions</strong></v-col>
           </v-row>
           <v-row v-for="item in educations" :key="item.education_name">
-            <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>University</strong></v-col>
+            <v-col cols="3"
+              class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>University</strong></v-col>
             <v-col cols="9" md="3">{{ item.education_name }}</v-col>
 
             <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Degree</strong></v-col>
             <v-col cols="9" md="3">{{ item.degree_name }}</v-col>
 
-            <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Start Date</strong></v-col>
+            <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Start
+                Date</strong></v-col>
             <v-col cols="9" md="2">{{ item.start_year }}</v-col>
 
-            <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>End Date</strong></v-col>
+            <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>End
+                Date</strong></v-col>
             <v-col cols="9" md="2">{{ item.end_year }}</v-col>
 
-            <v-col cols="3" class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Actions</strong></v-col>
+            <v-col cols="3"
+              class="bg-indigo-lighten-2 d-md-none text-right border-b-sm"><strong>Actions</strong></v-col>
             <v-col cols="9" md="2">
               <v-icon size="small" icon="mdi-pencil mr-4" @click="openEdit(item)"></v-icon>
               <v-icon size="large" icon="mdi-delete" @click="deleteEducation(item)"></v-icon>
@@ -174,7 +191,9 @@ async function deleteEducation(item) {
           </v-row>
         </v-card-text>
       </v-card>
-
+      <v-col v-else-if="!loading && educations.length === 0" class="text-h5 text-center">
+        <span>Add Education to your profile.</span>
+      </v-col>
       <v-dialog persistent :model-value="isAdd || isEdit" width="800">
         <v-card class="rounded-lg elevation-5">
           <v-card-item>
