@@ -153,7 +153,7 @@ function closeSnackBar() {
                     <v-btn v-if="user !== null" color="primary" @click="openAdd()">Add</v-btn>
                 </v-col>
             </v-row>
-            <v-card class="rounded-lg elevation-5">
+            <v-card v-if="!loading && certificates.length > 0" class="rounded-lg elevation-5">
                 <v-card-text>
                     <v-row class="d-none d-md-flex">
                         <v-col cols="4" class="bg-indigo-lighten-2"><strong>Certificate Title</strong></v-col>
@@ -189,6 +189,9 @@ function closeSnackBar() {
                     </v-row>
                 </v-card-text>
             </v-card>
+            <v-col v-else-if="!loading && certificates.length === 0" class="text-h5 text-center">
+                <span>Add Certificates to your profile.</span>
+            </v-col>
             <v-dialog persistent :model-value="isAdd || isEdit" width="800">
                 <v-card class="rounded-lg elevation-5">
                     <v-card-item>

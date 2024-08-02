@@ -154,7 +154,7 @@ function closeSnackBar() {
           </v-col>
         </v-row>
       </v-row>
-      <v-card class="rounded-lg elevation-5">
+      <v-card v-if="!loading && experiences.length > 0" class="rounded-lg elevation-5">
         <v-card-text>
           <v-row class="d-none d-md-flex">
             <v-col cols="3" class="bg-indigo-lighten-2"><strong>Employer</strong></v-col>
@@ -189,6 +189,9 @@ function closeSnackBar() {
           </v-row>
         </v-card-text>
       </v-card>
+      <v-col v-else-if="!loading && experiences.length === 0" class="text-h5 text-center">
+        <span>Add Experience to your profile.</span>
+      </v-col>
       <v-dialog persistent :model-value="isAdd || isEdit" width="800">
         <v-card class="rounded-lg elevation-5">
           <v-card-item>

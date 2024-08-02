@@ -52,8 +52,8 @@ async function getEducation() {
 
 function openAdd() {
   newEd.value.education_name = "",
-  newEd.value.awards = "",
-  newEd.value.degree_name = "";
+    newEd.value.awards = "",
+    newEd.value.degree_name = "";
   newEd.value.start_year = "";
   newEd.value.end_year = "";
   newEd.value.coursework = "";
@@ -89,8 +89,8 @@ function closeAdd() {
 
 function openEdit(item) {
   newEd.value.education_name = item.education_name,
-  newEd.value.location = item.location,
-  newEd.value.awards = item.awards;
+    newEd.value.location = item.location,
+    newEd.value.awards = item.awards;
   newEd.value.start_year = item.start_year;
   newEd.value.end_year = item.end_year;
   newEd.value.degree_name = item.degree_name;
@@ -156,7 +156,7 @@ async function deleteEducation(item) {
           </v-col>
         </v-row>
       </v-row>
-      <v-card class="rounded-lg elevation-5">
+      <v-card v-if="!loading && educations.length > 0" class="rounded-lg elevation-5">
         <v-card-text>
           <v-row class="d-none d-md-flex">
             <v-col cols="3" class="bg-indigo-lighten-2"><strong>University</strong></v-col>
@@ -191,7 +191,9 @@ async function deleteEducation(item) {
           </v-row>
         </v-card-text>
       </v-card>
-
+      <v-col v-else-if="!loading && educations.length === 0" class="text-h5 text-center">
+        <span>Add Education to your profile.</span>
+      </v-col>
       <v-dialog persistent :model-value="isAdd || isEdit" width="800">
         <v-card class="rounded-lg elevation-5">
           <v-card-item>
