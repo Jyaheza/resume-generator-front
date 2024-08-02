@@ -735,7 +735,6 @@ v-card-title:hover {
                                 </v-col>
                             </template>
                         </v-row>
-                        {{ skillsData }}
                     </template>
                     <v-template v-else-if="showSkills && !loading && skillsData.length === 0">
                         <v-col col="12">
