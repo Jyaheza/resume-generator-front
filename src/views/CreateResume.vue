@@ -510,6 +510,17 @@ v-card-title:hover {
                             </template>
                         </template>
                     </template>
+                    <v-template v-else-if="showJobExperience && !loading && jobExperienceData.length === 0">
+                        <v-col col="12">
+                            <p class="pl-0 text-h7 font-weight-bold d-flex text-center text-sm-start">
+                                You are missing professional experience in your profile. This is not required to generate 
+                                a resume, but if you would like, you can add some here:</p>
+                        </v-col>
+                        <v-col col="12" class="d-flex justify-center justify-sm-start align-center">
+                            <v-btn rounded="xl" color="primary" @click="router.push('experience')">Manage
+                                Professional Experience</v-btn>
+                        </v-col>
+                    </v-template>
                 </v-col>
             </v-row>
 
@@ -568,6 +579,17 @@ v-card-title:hover {
                             </template>
                         </template>
                     </template>
+                    <v-template v-else-if="showEducation && !loading && educationData.length === 0">
+                        <v-col col="12">
+                            <p class="pl-0 text-h7 font-weight-bold d-flex text-center text-sm-start">
+                                You are missing education in your profile. This is not required to generate 
+                                a resume, but if you would like, you can add some here:</p>
+                        </v-col>
+                        <v-col col="12" class="d-flex justify-center justify-sm-start align-center">
+                            <v-btn rounded="xl" color="primary" @click="router.push('education')">
+                                Manage Education</v-btn>
+                        </v-col>
+                    </v-template>
                 </v-col>
             </v-row>
 
@@ -616,6 +638,17 @@ v-card-title:hover {
                             </template>
                         </template>
                     </template>
+                    <v-template v-else-if="showProjects && !loading && projectsData.length === 0">
+                        <v-col col="12">
+                            <p class="pl-0 text-h7 font-weight-bold d-flex text-center text-sm-start">
+                                You are missing projects in your profile. This is not required to generate 
+                                a resume, but if you would like, you can add some here:</p>
+                        </v-col>
+                        <v-col col="12" class="d-flex justify-center justify-sm-start align-center">
+                            <v-btn rounded="xl" color="primary" @click="router.push('project')">
+                                Manage Projects</v-btn>
+                        </v-col>
+                    </v-template>
                 </v-col>
             </v-row>
 
@@ -663,6 +696,17 @@ v-card-title:hover {
                             </template>
                         </template>
                     </template>
+                    <v-template v-else-if="showCertificates && !loading && certificatesData.length === 0">
+                        <v-col col="12">
+                            <p class="pl-0 text-h7 font-weight-bold d-flex text-center text-sm-start">
+                                You are missing certificates in your profile. This is not required to generate 
+                                a resume, but if you would like, you can add some here:</p>
+                        </v-col>
+                        <v-col col="12" class="d-flex justify-center justify-sm-start align-center">
+                            <v-btn rounded="xl" color="primary" @click="router.push('certificate')">
+                                Manage Certificates</v-btn>
+                        </v-col>
+                    </v-template>
                 </v-col>
             </v-row>
 
@@ -676,7 +720,7 @@ v-card-title:hover {
                     <span class="pl-0 text-h6 font-weight-bold">Skills</span>
                 </v-col>
                 <v-col>
-                    <template v-if="showSkills">
+                    <template v-if="showSkills && skillsData.length > 0">
                         <v-row>
                             <template v-for="(skill, index) in skillsData" :key="index">
                                 <v-col cols="12" sm="6" md="4" lg="3">
@@ -691,7 +735,19 @@ v-card-title:hover {
                                 </v-col>
                             </template>
                         </v-row>
+                        {{ skillsData }}
                     </template>
+                    <v-template v-else-if="showSkills && !loading && skillsData.length === 0">
+                        <v-col col="12">
+                            <p class="pl-0 text-h7 font-weight-bold d-flex text-center text-sm-start">
+                                You are missing skills in your profile. This is not required to generate 
+                                a resume, but if you would like, you can add some here:</p>
+                        </v-col>
+                        <v-col col="12" class="d-flex justify-center justify-sm-start align-center">
+                            <v-btn rounded="xl" color="primary" @click="router.push('skill')">
+                                Manage Skills</v-btn>
+                        </v-col>
+                    </v-template>
                 </v-col>
             </v-row>
         </div>
