@@ -62,7 +62,7 @@ async function getUsers() {
 async function deleteUser(item) {
     if (confirm('Are you sure you want to delete ' + item.firstName + ' ' + item.lastName
         + ' with ID: ' + item.id)) {
-        UserServices.deleteUser(item.id);
+        await UserServices.deleteUser(item.id);
     }
     await getUsers();
 }
