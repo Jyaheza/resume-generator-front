@@ -12,10 +12,12 @@ const snackbar = ref({ value: false, text: "", color: "" });
 
 const dialog = ref(false);
 const showDeleteDialog = ref(false);
+const showDeleteReviewDialog = ref(false);
 const reviewComments = ref("");
 const reviewSuggestions = ref("");
 const selectedResumeId = ref(null);
 const resumeToDelete = ref(null);
+const reviewToDelete = ref(null);
 const searchQuery = ref("");
 
 const filteredResumes = computed(() => {
@@ -106,6 +108,11 @@ function deleteResumePrompt(resumeId) {
   resumeToDelete.value = resumeId;
 }
 
+function deleteReviewPrompt(reviewId) {
+  showDeleteReviewDialog.value = true;
+  reviewToDelete.value = reviewId;
+}
+
 async function deleteResume(resumeId) {
   showDeleteDialog.value = false;
   try {
@@ -123,6 +130,31 @@ async function deleteResume(resumeId) {
   }
 }
 
+function canDeleteReview(review){
+  if(review.reviewer_id == user.value.id){
+    return true
+  }
+  else
+    return false
+}
+
+async function deleteReview(reviewId,resumeId) {
+
+  showDeleteReviewDialog.value = false;
+  try {
+    await ReviewServices.deleteReview(reviewId);
+    snackbar.value.value = true;
+    snackbar.value.color = "green";
+    snackbar.value.text = "Review deleted successfully!";
+    fetchReviews(resumeId)
+  } catch (error) {
+    console.error(error);
+    snackbar.value.value = true;
+    snackbar.value.color = "error";
+    snackbar.value.text = `There was an error deleting the review: ${error.response.data.message}`;
+  }
+}
+
 function closeSnackBar() {
   snackbar.value.value = false;
 }
@@ -132,6 +164,7 @@ function openReviewDialog(resumeId) {
   selectedResumeId.value = resumeId;
   dialog.value = true;
   fetchReviews(resumeId);
+
 }
 
 function closeReviewDialog() {
@@ -173,6 +206,7 @@ async function fetchReviews(resumeId) {
   try {
     const response = await ReviewServices.getReviewsForResume(resumeId);
     existingReviews.value = response.data;
+    console.log(existingReviews.value)
   } catch (error) {
     console.error("Error fetching reviews:", error);
   }
@@ -259,26 +293,35 @@ async function fetchReviews(resumeId) {
             <v-divider class="mb-4"></v-divider>
             <v-row align="start">
               <v-col v-for="review in existingReviews" :key="review.id" cols="12" class="mb-3">
-                <v-card class="ma-1 pa-3" outlined elevation="2" rounded="lg">
-                  <v-card-title class="d-flex align-center font-weight-bold">
-                    <v-icon left color="primary">mdi-account-circle</v-icon>
-                    {{ review.reviewer_name }}
-                  </v-card-title>
-                  <v-divider></v-divider>
-                  <v-card-text>
-                    <div class="mt-3">
-                      <div class="font-weight-bold">Comments:</div>
-                      <div>{{ review.comments }}</div>
-                    </div>
-                    <div class="mt-3">
-                      <div class="font-weight-bold">Suggestions:</div>
-                      <div>{{ review.suggestions }}</div>
-                    </div>
-                  </v-card-text>
-                  <v-card-actions class="d-flex justify-between pa-0">
-                    <span class="text-subtitle-2 text-grey">Created: {{ review.createdAt }}</span>
-                  </v-card-actions>
-                </v-card>
+                <v-card>
+  <v-card-title class="d-flex align-center font-weight-bold">
+    <v-icon left color="primary">mdi-account-circle</v-icon>
+    {{ review.reviewer_name }}
+  </v-card-title>
+  <v-divider></v-divider>
+  <v-card-text>
+    <div class="mt-3">
+      <div class="font-weight-bold">Comments:</div>
+      <div>{{ review.comments }}</div>
+    </div>
+    <div class="mt-3">
+      <div class="font-weight-bold">Suggestions:</div>
+      <div>{{ review.suggestions }}</div>
+    </div>
+  </v-card-text>
+  <v-card-actions class="d-flex justify-between pa-0">
+    <span class="text-subtitle-2 text-grey">Created: {{ review.createdAt }}</span>
+    <v-icon 
+      v-if="canDeleteReview(review)" 
+      @click="deleteReviewPrompt(review.id)" 
+      size="x-large" 
+      color="red" 
+      class="ml-auto">
+      mdi-delete-circle
+    </v-icon>
+  </v-card-actions>
+</v-card>
+
               </v-col>
             </v-row>
           </div>
@@ -310,6 +353,19 @@ async function fetchReviews(resumeId) {
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" @click="showDeleteDialog = false">Cancel</v-btn>
           <v-btn color="blue darken-1" @click="deleteResume(resumeToDelete)">Delete</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    
+    <!-- Review Delete Confirmation Dialog -->
+    <v-dialog v-model="showDeleteReviewDialog" persistent max-width="400px">
+      <v-card>
+        <v-card-title class="headline">Confirm Delete</v-card-title>
+        <v-card-text>Are you sure you want to delete this review</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" @click="showDeleteReviewDialog = false">Cancel</v-btn>
+          <v-btn color="blue darken-1" @click="deleteReview(reviewToDelete,selectedResumeId)">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
