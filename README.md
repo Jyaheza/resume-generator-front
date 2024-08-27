@@ -1,7 +1,6 @@
 # Recipe Frontend with Vue 3
 
-This application allows users to create and maintain recipes. Please visit https://github.com/OC-ComputerScience/recipe-backend for the backend repository.
-
+This application allows users to create and maintain a list of resumes pdfs. A user can also submit resume for review to career services. This app also features AI(cohere) for assistance in job matching by comparing a resume to a job description and giving it a score and some comments. Please visit https://github.com/jyaheza/resume-generator-back for the Vue 3 frontend repository.
 ## Project Setup
 
 1. Clone the project into your **XAMPP/xamppfiles/htdocs/recipeapp** directory.
